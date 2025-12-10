@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz de Turismo - MundoTur</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
+    ::-webkit-scrollbar { width: 10px; }
+    ::-webkit-scrollbar-track { background: #f1f1f1; }
+    ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 5px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--dark); }
+    :root {
+      --primary: #ff8c42; --dark: #ff6f00; --accent: #4ecdc4;
+      --shadow: 0 10px 30px rgba(0,0,0,0.2);
+    }
+    body {
+      margin: 0;
+      font-family: 'Poppins', -apple-system, sans-serif;
+      background: linear-gradient(135deg, #fff8f0 0%, #fff4e6 50%, #fff 100%);
+      color: #333;
+      transition: 0.3s;
+      position: relative;
+    }
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: radial-gradient(ellipse at 20% 50%, rgba(255,140,66,0.05) 0%, transparent 50%),
+                  radial-gradient(ellipse at 80% 80%, rgba(78,205,196,0.05) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    /* HEADER */
+    header {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--dark) 100%);
+      color: white;
+      text-align: center;
+      padding: 20px;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    }
+    nav ul { list-style: none; display: flex; justify-content: center; flex-wrap: wrap; margin: 0; padding: 0; gap: 20px; }
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-weight: 600;
+      position: relative;
+      padding: 8px 0;
+    }
+    nav a::after {
+      content: "";
+      position: absolute;
+      width: 0;
+      height: 3px;
+      background: linear-gradient(90deg, #ffe66d, #ff8c42);
+      left: 0;
+      bottom: -5px;
+      transition: width 0.3s;
+    }
+    nav a:hover::after, nav a.active::after { width: 100%; }
+
+    /* QUIZ CONTAINER */
+    .quiz-container {
+      max-width: 700px;
+      margin: 50px auto;
+      background: rgba(255, 255, 255, 0.97);
+      border-radius: 22px;
+      box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+      padding: 40px;
+      animation: slideUp 0.8s ease;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+    @keyframes slideUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+    .quiz-container h2 {
+      text-align: center;
+      color: var(--primary);
+      margin-bottom: 35px;
+      font-size: 2rem;
+      position: relative;
+      padding-bottom: 18px;
+      font-weight:800;
+      letter-spacing:0.5px;
+    }
+    .quiz-container h2::after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80px;
+      height: 5px;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+      border-radius: 3px;
+      box-shadow:0 4px 12px rgba(255,140,66,0.2);
+    }
+    .quiz-container p { 
+      margin-bottom: 16px; 
+      font-weight: 700; 
+      color: #333;
+      animation: slideLeft 0.6s ease-out forwards;
+      opacity: 0;
+      font-size:1.05rem;
+      padding:12px;
+      background:rgba(255,140,66,0.05);
+      border-left:4px solid var(--primary);
+      border-radius:8px;
+    }
+    @keyframes slideLeft { from {opacity:0; transform:translateX(-20px);} to {opacity:1; transform:translateX(0);} }
+    .quiz-container p:nth-child(n+3) { animation-delay: calc((var(--p-index, 1) - 2) * 0.1s); }
+    .quiz-container hr { 
+      border: none; 
+      height: 1px; 
+      background: linear-gradient(90deg, transparent, #e0e0e0, transparent); 
+      margin: 22px 0;
+    }
+    label { 
+      display: block; 
+      margin-bottom: 14px; 
+      cursor: pointer; 
+      padding: 12px 14px; 
+      border-radius: 10px; 
+      transition: all 0.3s;
+      border:2px solid transparent;
+      background:rgba(255,140,66,0.02);
+    }
+    label:hover { 
+      background: rgba(255,140,66,0.08);
+      border-color:rgba(255,140,66,0.3);
+      padding-left: 18px;
+    }
+    input[type="radio"] { 
+      margin-right: 10px; 
+      cursor: pointer; 
+      accent-color: var(--primary);
+      width:18px;
+      height:18px;
+    }
+
+    button {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--dark) 100%);
+      color: white;
+      border: none;
+      padding: 14px 32px;
+      border-radius: 12px;
+      cursor: pointer;
+      display: block;
+      margin: 30px auto 0;
+      font-size: 1.05rem;
+      font-weight: 700;
+      transition: all 0.3s;
+      position: relative;
+      overflow: hidden;
+      box-shadow:0 6px 20px rgba(255,140,66,0.3);
+      letter-spacing:0.5px;
+    }
+    button::before {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.3);
+      transform: translate(-50%, -50%);
+      transition: width 0.6s, height 0.6s;
+    }
+    button:active::before {
+      width: 300px;
+      height: 300px;
+    }
+    button:hover { 
+      transform: translateY(-3px);
+      box-shadow: 0 10px 28px rgba(255,140,66,0.4);
+    }
+
+    #resultado {
+      text-align: center;
+      font-weight: 700;
+      margin-top: 28px;
+      font-size: 1.4rem;
+      transition: opacity 0.5s;
+      padding: 18px;
+      border-radius: 12px;
+      animation:slideUp 0.5s ease;
+    }
+
+    footer {
+      text-align: center;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--dark) 100%);
+      color: white;
+      padding: 20px;
+      margin-top: 50px;
+      box-shadow: 0 -4px 15px rgba(0,0,0,0.1);
+    }
+
+    /* DARK MODE + BOTÕES FIXOS */
+    #btn-darkmode, #btn-top {
+      position: fixed;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      z-index: 2000;
+      box-shadow: var(--shadow);
+      transition: all 0.3s ease;
+    }
+    #btn-darkmode {
+      top: 20px; right: 20px;
+      background: rgba(255,255,255,0.9);
+      color: #333;
+      padding: 10px 12px;
+      font-size: 1.2rem;
+    }
+    #btn-darkmode:hover { 
+      background: var(--primary);
+      color: white;
+      transform: scale(1.1) rotate(20deg);
+      box-shadow: 0 8px 25px rgba(255,140,66,0.4);
+    }
+
+    #btn-top {
+      bottom: 20px; right: 20px;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--dark) 100%);
+      color: white;
+      padding: 10px 14px;
+      font-size: 18px;
+      display: none;
+    }
+    #btn-top:hover { 
+      transform: translateY(-3px);
+      box-shadow: 0 12px 25px rgba(0,0,0,0.3);
+    }
+
+    /* DARK MODE COLORS */
+    body.dark { 
+      background: linear-gradient(135deg, #1a1a1a 0%, #2c2c2c 100%);
+      color: #eee;
+    }
+    body.dark header, body.dark footer { background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%); color: #eee; }
+    body.dark .quiz-container { background: #2c2c2c; box-shadow: 0 4px 12px rgba(255,255,255,0.05); color: #eee; }
+    body.dark label { color: #eee; }
+    body.dark #btn-darkmode { background: var(--primary); color: white; }
+    @media (max-width: 768px) {
+      .quiz-container { margin: 20px; padding: 20px; }
+      .quiz-container h2 { font-size: 1.4rem; }
+      button { padding: 10px 20px; margin-top: 20px; }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>MundoTur</h1>
+    <nav>
+      <ul>
+        <li><a href="index.html">Início</a></li>
+        <li><a href="destinos.html">Destinos</a></li>
+        <li><a href="desejo.html">Desejo</a></li>
+        <li><a href="quiz.html" class="active">Quiz</a></li>
+        <li><a href="contacto.html">Contacto</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <button id="btn-darkmode">🌙</button>
+  <button id="btn-top">↑</button>
+
+  <main class="quiz-container">
+    <h2>🧭 Quiz de Turismo</h2>
+    <div id="quiz"></div>
+    <button id="btn-submeter">Ver resultado</button>
+    <p id="resultado"></p>
+  </main>
+
+  <footer>© 2025 MundoTur | <span id="hora"></span></footer>
+
+  <script>
+    const perguntas = [
+      { pergunta: "Qual é o país mais visitado do mundo?", opcoes: ["Espanha", "França", "Itália", "EUA"], resposta: "França" },
+      { pergunta: "Onde fica a Torre Eiffel?", opcoes: ["Paris", "Londres", "Berlim", "Roma"], resposta: "Paris" },
+      { pergunta: "Onde está o Cristo Redentor?", opcoes: ["Lisboa", "Rio de Janeiro", "Madrid", "Buenos Aires"], resposta: "Rio de Janeiro" },
+      { pergunta: "Qual destes é um país insular?", opcoes: ["Japão", "Suíça", "Alemanha", "Áustria"], resposta: "Japão" },
+      { pergunta: "Em que continente está o Egito?", opcoes: ["África", "Europa", "Ásia", "América"], resposta: "África" }
+    ];
+
+    const quiz = document.getElementById("quiz");
+    perguntas.forEach((q, i) => {
+      const bloco = document.createElement("div");
+      bloco.innerHTML = `<p><strong>${i + 1}. ${q.pergunta}</strong></p>` +
+        q.opcoes.map(op => `<label><input type="radio" name="p${i}" value="${op}"> ${op}</label>`).join("");
+      quiz.appendChild(bloco);
+      quiz.appendChild(document.createElement("hr"));
+    });
+
+    document.getElementById("btn-submeter").addEventListener("click", () => {
+      let acertos = 0;
+      perguntas.forEach((q, i) => {
+        const resposta = document.querySelector(`input[name="p${i}"]:checked`);
+        if (resposta && resposta.value === q.resposta) acertos++;
+      });
+      const result = document.getElementById("resultado");
+      result.style.opacity = 0;
+      setTimeout(() => {
+        result.style.opacity = 1;
+        result.style.color = acertos >= 4 ? "limegreen" : acertos >= 2 ? "#ffae42" : "red";
+        result.textContent = `Acertaste ${acertos} de ${perguntas.length} perguntas!`;
+      }, 200);
+    });
+
+    // DARK MODE
+    const btnDark = document.getElementById('btn-darkmode');
+    btnDark.addEventListener('click', () => {
+      document.body.classList.toggle('dark');
+      btnDark.textContent = document.body.classList.contains('dark') ? "☀️" : "🌙";
+    });
+
+    // BOTÃO TOPO
+    const btnTop = document.getElementById('btn-top');
+    window.addEventListener('scroll', () => {
+      btnTop.style.display = window.scrollY > 200 ? "block" : "none";
+    });
+    btnTop.onclick = () => window.scrollTo({ top: 0, behavior: "smooth" });
+
+    // RELÓGIO
+    function atualizarHora() {
+      const hora = new Date().toLocaleTimeString('pt-PT', { hour: '2-digit', minute: '2-digit' });
+      document.getElementById('hora').textContent = `Hora local: ${hora}`;
+    }
+    setInterval(atualizarHora, 1000); atualizarHora();
+  </script>
+</body>
+</html>

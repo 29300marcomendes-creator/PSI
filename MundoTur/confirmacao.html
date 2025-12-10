@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Confirmação — MundoTur</title>
+  <style>
+    :root{ --primary:#ff8c42; --dark:#ff6f00; --accent:#4ecdc4; --shadow:0 10px 30px rgba(0,0,0,0.2); }
+    *{margin:0; padding:0; box-sizing:border-box; scroll-behavior:smooth}
+    ::-webkit-scrollbar { width: 10px; }
+    ::-webkit-scrollbar-track { background: #f1f1f1; }
+    ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 5px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--dark); }
+    
+    body{font-family:'Poppins', -apple-system, sans-serif; background:linear-gradient(135deg, #f0fff4 0%, #e8f8f5 50%, #fff 100%); color:#333; transition:0.3s; position:relative}
+    body::before{content:""; position:fixed; top:0; left:0; right:0; bottom:0; background:radial-gradient(ellipse at 20% 50%, rgba(255,140,66,0.04) 0%, transparent 50%), radial-gradient(ellipse at 80% 80%, rgba(78,205,196,0.08) 0%, transparent 50%); pointer-events:none; z-index:-1}
+    
+    header{background:linear-gradient(135deg, var(--primary) 0%, var(--dark) 100%); color:white; padding:20px 30px; position:sticky; top:0; z-index:1000; box-shadow:0 4px 15px rgba(0,0,0,0.2); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:20px}
+    header h1{font-size:1.6rem; font-weight:800; margin:0; letter-spacing:1px}
+    nav{display:flex; gap:20px; flex-wrap:wrap}
+    nav a{color:white; text-decoration:none; font-weight:600; position:relative; padding:8px 0; transition:0.3s}
+    nav a::after{content:""; position:absolute; width:0; height:3px; background:linear-gradient(90deg,#ffe66d,#ff8c42); left:0; bottom:-5px; transition:width 0.3s}
+    nav a:hover::after, nav a[aria-current]::after{width:100%}
+
+    .container{max-width:900px; margin:0 auto; padding:40px 20px}
+    
+    .confirmation-card{background:rgba(255,255,255,0.97); border-radius:20px; padding:50px; box-shadow:var(--shadow); border:2px solid #e0f2f1; animation:slideUp 0.6s ease; text-align:center}
+    @keyframes slideUp{from{opacity:0; transform:translateY(30px)}to{opacity:1; transform:translateY(0)}}
+    
+    .success-icon{font-size:4rem; margin-bottom:20px; animation:bounce 0.8s ease infinite}
+    @keyframes bounce{0%, 100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+    
+    h2{color:var(--primary); font-size:2.2rem; margin-bottom:15px; font-weight:800}
+    .subtitle{color:#666; font-size:1.1rem; margin-bottom:40px; line-height:1.6}
+
+    .offer-summary{background:linear-gradient(135deg, rgba(255,140,66,0.05), rgba(78,205,196,0.05)); border-radius:16px; padding:30px; margin:30px 0; border:2px solid rgba(255,140,66,0.1); display:flex; gap:25px; align-items:flex-start}
+    .offer-summary img{width:200px; height:150px; object-fit:cover; border-radius:12px; box-shadow:0 8px 20px rgba(0,0,0,0.1)}
+    .offer-details{text-align:left; flex:1}
+    .offer-details h3{color:var(--primary); font-size:1.4rem; margin-bottom:10px; font-weight:700}
+    .offer-details p{color:#666; line-height:1.7; margin-bottom:10px; font-size:0.95rem}
+    .price-tag{font-size:1.8rem; color:var(--primary); font-weight:800; margin:15px 0}
+    .price-tag small{display:block; font-size:0.8rem; color:#999; font-weight:600}
+
+    .checklist{text-align:left; margin:30px 0; padding:20px; background:#f8f8f8; border-radius:14px; border-left:4px solid var(--primary)}
+    .checklist h4{color:var(--primary); margin-bottom:12px; font-weight:700}
+    .checklist li{margin-bottom:8px; color:#555; font-weight:500; list-style:none; padding-left:25px; position:relative}
+    .checklist li::before{content:"✓"; position:absolute; left:0; color:var(--accent); font-weight:900; font-size:1.1rem}
+
+    .button-group{display:flex; gap:15px; justify-content:center; flex-wrap:wrap; margin-top:35px}
+    button, a.button{background:linear-gradient(135deg, var(--primary) 0%, var(--dark) 100%); color:white; border:none; padding:14px 32px; border-radius:10px; cursor:pointer; font-weight:700; font-size:1rem; text-decoration:none; display:inline-block; transition:all 0.3s; box-shadow:0 4px 15px rgba(255,140,66,0.2); position:relative; overflow:hidden}
+    button::before, a.button::before{content:""; position:absolute; top:50%; left:50%; width:0; height:0; border-radius:50%; background:rgba(255,255,255,0.3); transform:translate(-50%,-50%); transition:width 0.6s, height 0.6s}
+    button:hover, a.button:hover{transform:translateY(-2px); box-shadow:0 8px 25px rgba(255,140,66,0.3)}
+    button:active::before, a.button:active::before{width:300px; height:300px}
+
+    a.secondary{background:transparent; border:2px solid #e0e0e0; color:#666; box-shadow:none}
+    a.secondary:hover{border-color:var(--primary); color:var(--primary); background:rgba(255,140,66,0.02)}
+
+    .info-box{background:#e8f5e9; border-left:4px solid var(--accent); padding:15px 20px; border-radius:8px; margin:20px 0; font-size:0.95rem; color:#2e7d32}
+    .info-box strong{color:#1b5e20}
+
+    footer{max-width:900px; margin:60px auto 20px; padding:30px 20px 0; color:#999; font-size:0.9rem; text-align:center; border-top:1px solid #e0e0e0}
+
+    #btn-darkmode{position:fixed; top:20px; right:20px; background:rgba(255,255,255,0.9); color:var(--primary); border:2px solid var(--primary); border-radius:50%; padding:12px 14px; cursor:pointer; font-size:1.3rem; z-index:2000; box-shadow:var(--shadow); transition:all 0.3s}
+    #btn-darkmode:hover{background:var(--primary); color:white; transform:scale(1.1) rotate(20deg)}
+
+    /* DARK MODE */
+    body.dark{background:linear-gradient(135deg, #1a1a1a 0%, #2c2c2c 100%); color:#eee}
+    body.dark header, body.dark footer{filter:brightness(0.9)}
+    body.dark .confirmation-card{background:#2c2c2c; box-shadow:0 4px 12px rgba(255,255,255,0.05)}
+    body.dark .offer-summary{background:#333; border-color:#444}
+    body.dark .checklist{background:#333; border-left-color:var(--primary)}
+    body.dark .info-box{background:#1b5e20; color:#a5d6a7}
+    body.dark .info-box strong{color:#c8e6c9}
+    body.dark #btn-darkmode{background:var(--primary); color:white; border-color:white}
+    body.dark button, body.dark a.button{box-shadow:0 4px 15px rgba(255,140,66,0.3)}
+
+    @media(max-width:768px){
+      .confirmation-card{padding:30px 20px}
+      .offer-summary{flex-direction:column; gap:15px}
+      .offer-summary img{width:100%; height:180px}
+      h2{font-size:1.8rem}
+      .success-icon{font-size:3rem}
+      button, a.button{padding:12px 24px; font-size:0.95rem}
+    }
+  </style>
+</head>
+<body>
+  <button id="btn-darkmode" title="Alternar modo claro/escuro">🌙</button>
+
+  <header>
+    <h1>MundoTur</h1>
+    <nav>
+      <a href="index.html">Início</a>
+      <a href="destinos.html">Destinos</a>
+      <a href="desejo.html">Desejo</a>
+      <a href="quiz.html">Quiz</a>
+      <a href="contacto.html">Contacto</a>
+      <a href="perfil.html">Perfil</a>
+    </nav>
+  </header>
+
+  <div class="container">
+    <div class="confirmation-card">
+      <div class="success-icon">✅</div>
+      <h2>Escolha Confirmada!</h2>
+      <p class="subtitle">A tua oferta de viagem foi selecionada com sucesso. Aqui estão todos os detalhes.</p>
+
+      <div id="offerContent">
+        <!-- Preenchido por JavaScript -->
+      </div>
+
+      <div class="checklist">
+        <h4>📋 Próximos passos:</h4>
+        <ul>
+          <li>Verifica os detalhes da oferta acima</li>
+          <li>Clica em "Ver Oferta" para abrir o site e reservar</li>
+          <li>Guarda o teu perfil com dados de contacto</li>
+          <li>Aproveita a viagem! 🌍</li>
+        </ul>
+      </div>
+
+      <div class="info-box">
+        <strong>💡 Dica:</strong> A tua escolha foi guardada no histórico. Podes ver as tuas seleções recentes em "Desejo".
+      </div>
+
+      <div class="button-group">
+        <a href="desejo.html" class="button">← Voltar a Desejo</a>
+        <a href="index.html" class="button secondary">Ir para Início</a>
+      </div>
+    </div>
+  </div>
+
+  <footer>© 2025 MundoTur — Boas viagens! 🌍</footer>
+
+  <script>
+    function displayConfirmation() {
+      try {
+        // Ler dados do localStorage (guardados em desejo.html)
+        const chosen = JSON.parse(localStorage.getItem('desejoChosen') || '{}');
+        const offerContent = document.getElementById('offerContent');
+
+        if (!chosen.title) {
+          offerContent.innerHTML = '<p class="info-box">Nenhuma oferta foi escolhida. <a href="desejo.html">Volta a Desejo para escolher.</a></p>';
+          return;
+        }
+
+        // Renderizar o cartão com os dados da oferta
+        offerContent.innerHTML = `
+          <div class="offer-summary">
+            <img src="${chosen.img || 'https://via.placeholder.com/200x150?text=Oferta'}" alt="${chosen.title}">
+            <div class="offer-details">
+              <h3>${chosen.title}</h3>
+              <p>${chosen.desc || 'Oferta especial de viagem'}</p>
+              <div class="price-tag">
+                €${chosen.price}
+                <small>Preço base</small>
+              </div>
+              <a href="${chosen.site || '#'}" target="_blank" rel="noopener" class="button" style="margin-top:15px">🔗 Ver Oferta Completa</a>
+            </div>
+          </div>
+        `;
+      } catch (e) {
+        console.error('Erro ao carregar confirmação:', e);
+        document.getElementById('offerContent').innerHTML = '<p style="color:red">Erro ao carregar os dados. Tenta novamente.</p>';
+      }
+    }
+
+    // DARK MODE
+    const btnDark = document.getElementById('btn-darkmode');
+    btnDark.addEventListener('click', () => {
+      document.body.classList.toggle('dark');
+      btnDark.textContent = document.body.classList.contains('dark') ? "☀️" : "🌙";
+    });
+
+    // Carregar confirmação quando a página abre
+    document.addEventListener('DOMContentLoaded', displayConfirmation);
+  </script>
+</body>
+</html>

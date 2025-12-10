@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Destinos - MundoTur</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+    * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
+    ::-webkit-scrollbar { width: 10px; }
+    ::-webkit-scrollbar-track { background: #f1f1f1; }
+    ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 5px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--dark); }
+    :root {
+      --primary: #ff8c42; --dark: #ff6f00; --accent: #4ecdc4;
+      --shadow: 0 10px 30px rgba(0,0,0,0.2);
+    }
+    body {
+      margin: 0;
+      font-family: 'Inter', 'Poppins', -apple-system, sans-serif;
+      background: linear-gradient(135deg, #fff9f4 0%, #fff6ee 40%, #fff 100%);
+      color: #222;
+      transition: 0.3s;
+      position: relative;
+      -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
+    }
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: radial-gradient(ellipse at 20% 50%, rgba(255,140,66,0.05) 0%, transparent 50%),
+                  radial-gradient(ellipse at 80% 80%, rgba(78,205,196,0.05) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    /* ===== HEADER ===== */
+    header {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--dark) 100%);
+      color: white;
+      text-align: center;
+      padding: 20px;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    }
+    nav ul {
+      list-style: none;
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin: 0;
+      padding: 0;
+      gap: 20px;
+    }
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-weight: 600;
+      position: relative;
+      padding: 8px 0;
+    }
+    nav a::after {
+      content: "";
+      position: absolute;
+      width: 0;
+      height: 3px;
+      background: linear-gradient(90deg, #ffe66d, #ff8c42);
+      left: 0;
+      bottom: -5px;
+      transition: width 0.3s;
+    }
+    nav a:hover::after, nav a.active::after { width: 100%; }
+
+    h2 { 
+      text-align: center; 
+      color: var(--primary); 
+      margin-top: 60px; 
+      margin-bottom: 50px; 
+      font-size: 2.2rem; 
+      animation: slideDown 0.8s;
+      position: relative;
+      padding-bottom: 18px;
+      font-weight:700;
+      letter-spacing:0.3px;
+    }
+    h2::after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80px;
+      height: 5px;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+      border-radius: 3px;
+      box-shadow:0 4px 12px rgba(255,140,66,0.2);
+    }
+    @keyframes slideDown { from {opacity:0; transform:translateY(-20px);} to {opacity:1; transform:translateY(0);} }
+    /* ===== LISTA DE DESTINOS ===== */
+    .lista-destinos {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 35px;
+      padding: 40px;
+      max-width: 1200px;
+      margin: auto;
+    }
+    .card {
+      background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(255,255,255,0.92));
+      border-radius: 20px;
+      box-shadow: 0 15px 35px rgba(22,32,60,0.1);
+      overflow: hidden;
+      transition: transform 0.4s cubic-bezier(.2,.9,.3,1), box-shadow 0.4s, border-color 0.4s;
+      animation: fadeUp 0.6s ease-out forwards;
+      opacity: 0;
+      position: relative;
+      border: 2px solid transparent;
+      cursor:pointer;
+    }
+    .card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, rgba(255,140,66,0.15) 0%, rgba(78,205,196,0.1) 100%);
+      opacity: 0;
+      transition: opacity 0.4s;
+      z-index: 2;
+    }
+    .card:hover::before {
+      opacity: 1;
+    }
+    @keyframes fadeUp { from {opacity:0; transform:translateY(25px) scale(0.95)}to {opacity:1; transform:translateY(0) scale(1)} }
+    .card:hover { 
+      transform: translateY(-16px) scale(1.02);
+      box-shadow: 0 25px 50px rgba(22,32,60,0.15);
+      border-color: var(--accent);
+    }
+    .card img { 
+      width: 100%; 
+      height: 220px; 
+      object-fit: cover; 
+      transition: transform 0.4s ease;
+      position: relative;
+      z-index: 1;
+    }
+    .card:hover img { 
+      transform: scale(1.12) rotate(1deg);
+    }
+    .card h3 { 
+      color: var(--primary); 
+      margin: 18px 18px 8px; 
+      font-size: 1.35rem;
+      font-weight: 700;
+      position: relative;
+      z-index: 2;
+      letter-spacing:0.5px;
+    }
+    .card p { 
+      padding: 0 18px 18px; 
+      color: #666; 
+      line-height: 1.6;
+      font-size: 0.96rem;
+      position: relative;
+      z-index: 2;
+    }
+
+    /* ===== FOOTER ===== */
+    footer {
+      text-align: center;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--dark) 100%);
+      color: white;
+      padding: 30px 20px;
+      font-size: 0.95rem;
+      margin-top: 80px;
+      border-top: 4px solid var(--accent);
+    }
+
+    /* ===== BOTÃO DARK MODE E TOPO ===== */
+    #btn-darkmode, #btn-top {
+      position: fixed;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      z-index: 2000;
+      box-shadow: var(--shadow);
+      transition: all 0.3s;
+    }
+    #btn-darkmode {
+      top: 100px; right: 20px;
+      background: rgba(255,255,255,0.9);
+      color: var(--primary);
+      border: 2px solid var(--primary);
+      padding: 12px 14px;
+      font-size: 1.3rem;
+    }
+    #btn-darkmode:hover { 
+      background: var(--primary); 
+      color: white;
+      transform: scale(1.1) rotate(20deg);
+      box-shadow: 0 8px 25px rgba(255,140,66,0.4);
+    }
+    #btn-top {
+      bottom: 20px; right: 20px;
+      background: var(--primary);
+      color: white;
+      padding: 12px 14px;
+      font-size: 20px;
+      display: none;
+    }
+    #btn-top:hover { background: var(--dark); }
+
+    /* ===== DARK MODE ===== */
+    body.dark { background: #1a1a1a; color: #eee; }
+    body.dark header, body.dark footer { filter: brightness(0.9); }
+    body.dark .card { background: #2c2c2c; box-shadow: 0 4px 12px rgba(255,255,255,0.05); }
+    body.dark #btn-darkmode { background: var(--primary); color: white; }
+    
+    @media (max-width: 768px) {
+      .lista-destinos { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+    }
+
+    /* ===== MODAL ===== */
+    .modal {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0,0,0,0.55);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+      z-index: 3000;
+    }
+    .modal.open { opacity: 1; pointer-events: auto; }
+    .modal-content {
+      width: min(980px, 96%);
+      max-height: 88vh;
+      overflow: auto;
+      background: linear-gradient(180deg, rgba(255,255,255,0.9), rgba(250,250,250,0.7));
+      border-radius: 14px;
+      padding: 14px;
+      box-shadow: 0 20px 60px rgba(10,20,40,0.25);
+      position: relative;
+      border: 1px solid rgba(255,255,255,0.6);
+      display: flex;
+      gap: 18px;
+      align-items: flex-start;
+      backdrop-filter: blur(6px) saturate(120%);
+      -webkit-backdrop-filter: blur(6px) saturate(120%);
+    }
+    .modal.open .modal-content { transform: translateY(0); }
+    .modal-img { width: 48%; height: 360px; object-fit: cover; border-radius: 10px; flex-shrink: 0; box-shadow: 0 10px 30px rgba(0,0,0,0.12); }
+    .modal-body { width: 52%; padding: 6px 10px; }
+    .modal-body h3 { margin: 6px 0 8px; color: var(--primary); }
+    .modal-body p { color: #444; line-height: 1.5; }
+    .modal-close {
+      position: absolute; right: 12px; top: 10px; background: transparent; border: none; font-size: 1.6rem; cursor: pointer;
+    }
+    .badge { display:inline-block; padding:6px 10px; margin-left:8px; background:#fff6eb; border-radius:10px; font-size:0.82rem; color:var(--dark); font-weight:600; box-shadow: 0 4px 12px rgba(0,0,0,0.06); }
+    .badge.precise { background: linear-gradient(90deg,#d4f8e8,#b9f1df); color:#07825a; }
+    .badge.estimate { background: linear-gradient(90deg,#fff1e0,#ffe7d2); color:#cc6a00; }
+    body.dark .badge { box-shadow:none; }
+    .transport-btn { display:flex; align-items:center; gap:8px; padding:10px 12px; }
+    .transport-btn .icon { width:18px; height:18px; display:inline-block; opacity:0.95; }
+    .transport-btn .label { font-weight:600; }
+    .geol-msg { margin-top:10px; color:#666; font-size:0.95rem; display:flex; align-items:center; gap:8px; }
+    .loader { width:18px; height:18px; border-radius:50%; border:2px solid rgba(0,0,0,0.12); border-top-color:var(--primary); animation:spin 0.9s linear infinite; display:inline-block; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .transport-buttons { display:flex; gap:10px; margin-top:12px; flex-wrap:wrap; }
+    .transport-btn { padding:8px 12px; border-radius:8px; border:1px solid rgba(0,0,0,0.08); background:#fff; cursor:pointer; transition:all 0.2s; }
+    .transport-btn:disabled { opacity:0.5; cursor:not-allowed; }
+    .transport-btn.active { background: linear-gradient(90deg, var(--primary), var(--accent)); color:white; border-color:transparent; }
+    .transport-details { margin-top:12px; background: transparent; }
+    .geol-msg { margin-top:10px; color:#666; font-size:0.95rem; }
+    body.dark .modal-content { background: #222; color: #eee; border-color: rgba(255,255,255,0.04); }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>MundoTur</h1>
+    <nav>
+      <ul>
+        <li><a href="index.html">Início</a></li>
+        <li><a href="destinos.html" class="active">Destinos</a></li>
+        <li><a href="desejo.html">Desejo</a></li>
+        <li><a href="quiz.html">Quiz</a></li>
+        <li><a href="contacto.html">Contacto</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <button id="btn-darkmode">🌙</button>
+  <button id="btn-top">↑</button>
+
+  <main>
+    <h2>🌎 Destinos Turísticos Incríveis</h2>
+    <div id="lista-destinos" class="lista-destinos"></div>
+  </main>
+
+  <!-- Modal para detalhes do destino -->
+  <div id="modal" class="modal" aria-hidden="true">
+    <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <button id="modal-close" class="modal-close" aria-label="Fechar">✕</button>
+      <img id="modal-img" class="modal-img" src="" alt="">
+      <div class="modal-body">
+        <h3 id="modal-title"></h3>
+        <p id="modal-chosen" style="margin-top:6px; font-weight:700; color:#333">Local escolhido: <span id="modal-chosen-name" style="color:var(--primary)"></span></p>
+        <p id="modal-country" style="font-weight:700; margin-top:6px"></p>
+        <p id="modal-desc" style="margin-top:10px"></p>
+        <div id="modal-transport-area">
+          <div class="transport-buttons"></div>
+          <div class="transport-details"></div>
+          <div class="geol-msg" id="geol-msg"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>© 2025 MundoTur | <span id="hora"></span></footer>
+
+  <script>
+    // Optional: if you have an OpenRouteService API key, paste it here to get exact driving/bus durations.
+    // Get a free key at https://openrouteservice.org/ (free tier available).
+    const ORS_API_KEY = ""; // <-- put your ORS API key between the quotes
+
+    const destinos = [
+      { nome: "Lisboa", pais: "Portugal", descricao: "História, luz e fado em cada rua.", imagem: "https://images.unsplash.com/photo-1505761671935-60b3a7427bad",
+        lat: 38.7223, lon: -9.1393,
+        transporte: {
+          aviao: { disponivel: true, preco: "€60", duracao: "50m", detalhes: "Várias ligações diárias desde aeroportos internacionais." },
+          carro: { disponivel: true, preco: "€40 (estim.)", duracao: "2h", detalhes: "Custo estimado com combustível e portagens." },
+          comboio: { disponivel: true, preco: "€30", duracao: "2h 30m", detalhes: "Comboios regionais e interurbanos." },
+          barco: { disponivel: false, preco: "-", duracao: "-", detalhes: "Ferry não aplicável para este destino." },
+          a_pe: { disponivel: false, preco: "-", duracao: "-", detalhes: "Muito longe para deslocar a pé." }
+        }
+      },
+      { nome: "Paris", pais: "França", descricao: "A cidade das luzes e do amor.", imagem: "https://images.unsplash.com/photo-1502602898657-3e91760cbb34",
+        lat: 48.8566, lon: 2.3522,
+        transporte: {
+          aviao: { disponivel: true, preco: "€120", duracao: "2h", detalhes: "Voos diretos e low-cost disponíveis." },
+          carro: { disponivel: true, preco: "€150 (estim.)", duracao: "12h", detalhes: "Custo estimado com combustível e portagens." },
+          comboio: { disponivel: true, preco: "€90", duracao: "10h (varia)", detalhes: "Possíveis ligações de comboio; verificar rotas." },
+          barco: { disponivel: false, preco: "-", duracao: "-", detalhes: "Barco não é opção prática." },
+          a_pe: { disponivel: false, preco: "-", duracao: "-", detalhes: "Muito longe para deslocar a pé." }
+        }
+      },
+      { nome: "Rio de Janeiro", pais: "Brasil", descricao: "Cristo Redentor e praias icónicas.", imagem: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d",
+        lat: -22.9068, lon: -43.1729,
+        transporte: {
+          aviao: { disponivel: true, preco: "€450", duracao: "10h", detalhes: "Conexões com escala; variação conforme temporada." },
+          carro: { disponivel: false, preco: "-", duracao: "-", detalhes: "Viagem por carro intercontinental não aplicável." },
+          comboio: { disponivel: false, preco: "-", duracao: "-", detalhes: "Sem ligação ferroviária direta intercontinental." },
+          barco: { disponivel: false, preco: "-", duracao: "-", detalhes: "Travessias marítimas de passageiros não consideradas." },
+          a_pe: { disponivel: false, preco: "-", duracao: "-", detalhes: "Muito longe para andar a pé." }
+        }
+      },
+      { nome: "Tóquio", pais: "Japão", descricao: "Tradição e tecnologia lado a lado.", imagem: "https://images.unsplash.com/photo-1549693578-d683be217e58",
+        lat: 35.6895, lon: 139.6917,
+        transporte: {
+          aviao: { disponivel: true, preco: "€700", duracao: "14h", detalhes: "Voos diretos/escala; reservar com antecedência para melhores preços." },
+          carro: { disponivel: false, preco: "-", duracao: "-", detalhes: "Viagem por carro intercontinental não aplicável." },
+          comboio: { disponivel: false, preco: "-", duracao: "-", detalhes: "Sem ligação ferroviária intercontinental." },
+          barco: { disponivel: false, preco: "-", duracao: "-", detalhes: "Não aplicável." },
+          a_pe: { disponivel: false, preco: "-", duracao: "-", detalhes: "Muito longe para andar a pé." }
+        }
+      },
+      { nome: "Nova Iorque", pais: "EUA", descricao: "A cidade que nunca dorme.", imagem: "https://images.unsplash.com/photo-1494976388531-d1058494cdd8",
+        lat: 40.7128, lon: -74.0060,
+        transporte: {
+          aviao: { disponivel: true, preco: "€350", duracao: "8h", detalhes: "Voos diretos disponíveis; bagagem incluída depende da companhia." },
+          carro: { disponivel: false, preco: "-", duracao: "-", detalhes: "Viagem por carro intercontinental não aplicável." },
+          comboio: { disponivel: false, preco: "-", duracao: "-", detalhes: "Sem ligação ferroviária intercontinental para passageiros." },
+          barco: { disponivel: false, preco: "-", duracao: "-", detalhes: "Travessias marítimas intercontinentais não consideradas." },
+          a_pe: { disponivel: false, preco: "-", duracao: "-", detalhes: "Muito longe para andar a pé." }
+        }
+      }
+    ];
+
+    const container = document.getElementById('lista-destinos');
+    destinos.forEach((d, i) => {
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.style.animationDelay = `${i * 0.2}s`;
+      card.innerHTML = `
+        <img src="${d.imagem}" alt="${d.nome}">
+        <h3>${d.nome}</h3>
+        <p><strong>${d.pais}</strong></p>
+        <p>${d.descricao}</p>`;
+      // store index to reference data when opening modal
+      card.dataset.index = i;
+      container.appendChild(card);
+    });
+
+    // ===== Modal behavior: abrir/popular =====
+    const modal = document.getElementById('modal');
+    const modalClose = document.getElementById('modal-close');
+    const modalImg = document.getElementById('modal-img');
+    const modalTitle = document.getElementById('modal-title');
+    const modalCountry = document.getElementById('modal-country');
+    const modalDesc = document.getElementById('modal-desc');
+    const modalChosenName = document.getElementById('modal-chosen-name');
+    const modalTransportBtns = document.querySelector('.transport-buttons');
+    const modalTransportDetails = document.querySelector('.transport-details');
+    const geolMsg = document.getElementById('geol-msg');
+
+    // utility: haversine distance in km
+    function haversine(lat1, lon1, lat2, lon2) {
+      const toRad = v => v * Math.PI / 180;
+      const R = 6371; // km
+      const dLat = toRad(lat2 - lat1);
+      const dLon = toRad(lon2 - lon1);
+      const a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon/2) * Math.sin(dLon/2);
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+      return R * c;
+    }
+
+    function formatDuration(hours) {
+      if (!isFinite(hours) || hours <= 0) return '-';
+      const h = Math.floor(hours);
+      const m = Math.round((hours - h) * 60);
+      return h > 0 ? `${h}h ${m}m` : `${m}m`;
+    }
+
+    function renderTransportOptions(d) {
+      modalTransportBtns.innerHTML = '';
+      modalTransportDetails.innerHTML = '';
+      geolMsg.textContent = '';
+
+      const modeLabels = { aviao: 'Avião', carro: 'Carro', comboio: 'Comboio', barco: 'Barco', a_pe: 'A Pé' };
+      const icons = {
+        carro: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 13v-2a2 2 0 0 1 2-2h1l1-3h8l1 3h1a2 2 0 0 1 2 2v2" stroke="#111" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"></path><path d="M5 19a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm14 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2z" stroke="#111" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"></path></svg>',
+        aviao: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.5 19.5l19-7-9-3-3-6-1 7-6 2 0 7z" stroke="#111" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+        comboio: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="5" width="18" height="11" rx="2" stroke="#111" stroke-width="1.2"/><path d="M7 17v2M17 17v2" stroke="#111" stroke-width="1.2" stroke-linecap="round"/></svg>',
+        barco: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 13s3 4 10 4 10-4 10-4-3 0-10 0S2 13 2 13z" stroke="#111" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+        a_pe: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2v6" stroke="#111" stroke-width="1.2" stroke-linecap="round"/><circle cx="12" cy="17" r="5" stroke="#111" stroke-width="1.2"/></svg>'
+      };
+
+      const modos = Object.keys(d.transporte || {});
+      modos.forEach(modo => {
+        const info = d.transporte && d.transporte[modo];
+        const btn = document.createElement('button');
+        btn.className = 'transport-btn';
+        btn.innerHTML = `<span class="icon">${icons[modo]||''}</span><span class="label">${modeLabels[modo] || modo}</span>`;
+        btn.disabled = !(info && info.disponivel);
+        btn.dataset.modo = modo;
+        btn.addEventListener('click', () => showTransportInfo(info, btn));
+        modalTransportBtns.appendChild(btn);
+      });
+
+      // helpers for UI
+      function showLoading(text) { geolMsg.innerHTML = `<span class="loader"></span> ${text || 'A calcular...'}`; }
+      function showMessage(text) { geolMsg.textContent = text; }
+
+      // compute durations using geolocation + ORS (if key) or heuristics
+      if (navigator.geolocation) {
+        showLoading('A calcular duração com a sua localização...');
+        navigator.geolocation.getCurrentPosition(async pos => {
+          showMessage('');
+          const lat = pos.coords.latitude;
+          const lon = pos.coords.longitude;
+          const distKm = haversine(lat, lon, d.lat, d.lon);
+
+          // If ORS key provided, try to fetch real driving duration (in seconds) for driving modes
+          if (ORS_API_KEY && d.lat != null && d.lon != null) {
+            try {
+              showLoading('A obter rota precisa (OpenRouteService)...');
+              const body = { coordinates: [[lon, lat], [d.lon, d.lat]] };
+              const res = await fetch('https://api.openrouteservice.org/v2/directions/driving-car/geojson', {
+                method: 'POST',
+                headers: {
+                  'Authorization': ORS_API_KEY,
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(body)
+              });
+              if (res.ok) {
+                const data = await res.json();
+                const secs = data.features && data.features[0] && data.features[0].properties && data.features[0].properties.summary && data.features[0].properties.summary.duration;
+                if (secs && d.transporte) {
+                  const hours = secs / 3600;
+                  // apply to driving mode 'carro' if present
+                  if (d.transporte.carro && d.transporte.carro.disponivel) {
+                    d.transporte.carro.estimated_duration = formatDuration(hours);
+                    d.transporte.carro.precise = true;
+                  }
+                }
+              } else {
+                console.warn('ORS response not ok', res.status);
+                showMessage('Erro ao obter rota precisa — a estimativa usa valores médios.');
+              }
+            } catch (e) {
+              console.error('ORS error', e);
+              showMessage('Erro ao obter rota precisa — a estimativa usa valores médios.');
+            }
+          }
+
+          // heuristics for other modes
+          const heuristics = {
+            comboio: (km) => ({ hours: Math.max(0.5, km / 120 + 0.5) }),
+            aviao: (km) => ({ hours: 2.5 + km / 800 }),
+            barco: (km) => ({ hours: km / 30 + 1 }),
+            a_pe: (km) => ({ hours: km / 5 })
+          };
+
+          Object.keys(d.transporte || {}).forEach(modo => {
+            const info = d.transporte[modo];
+            if (!info || !info.disponivel) return;
+            if (!info.estimated_duration) {
+              if (modo === 'carro') {
+                const hours = distKm / 60 + 0.5;
+                info.estimated_duration = formatDuration(hours);
+              } else if (heuristics[modo]) {
+                info.estimated_duration = formatDuration(heuristics[modo](distKm).hours);
+              }
+            }
+            if (modo === 'aviao') info.recommended = distKm > 300;
+          });
+
+          // auto-open first available
+          const firstAvailable = modalTransportBtns.querySelector('button:not([disabled])');
+          if (firstAvailable) firstAvailable.click();
+        }, err => {
+          showMessage('Não foi possível obter a sua localização — a estimativa usa os valores médios.');
+          modalTransportBtns.querySelector('button:not([disabled])')?.click();
+        }, { timeout: 10000 });
+      } else {
+        showMessage('Geolocalização não suportada neste navegador.');
+        modalTransportBtns.querySelector('button:not([disabled])')?.click();
+      }
+    }
+
+    function showTransportInfo(info, btn) {
+      // mark active
+      modalTransportBtns.querySelectorAll('.transport-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const duration = info.estimated_duration ? info.estimated_duration : info.duracao;
+      const badge = info.precise ? '<span class="badge precise">Preciso (ORS)</span>' : '<span class="badge estimate">Estimativa</span>';
+      let rec = '';
+      if (info.recommended === false) rec = '<em style="color:#c55; display:block; margin-top:6px;">Não recomendado para curtas distâncias</em>';
+      modalTransportDetails.innerHTML = `
+        <p><strong>Preço:</strong> ${info.preco}</p>
+        <p><strong>Duração aproximada:</strong> ${duration}${badge}</p>
+        <p>${info.detalhes}</p>
+        ${rec}
+      `;
+    }
+
+    function openModalForIndex(idx) {
+      const d = destinos[idx];
+      modalImg.src = d.imagem;
+      modalImg.alt = d.nome;
+      modalTitle.textContent = d.nome;
+      // Mostrar claramente o local que o utilizador escolheu
+      if(modalChosenName) modalChosenName.textContent = d.nome;
+      modalCountry.textContent = d.pais;
+      modalDesc.textContent = d.descricao;
+      renderTransportOptions(d);
+      modal.classList.add('open');
+      modal.setAttribute('aria-hidden', 'false');
+    }
+
+    function closeModal() {
+      modal.classList.remove('open');
+      modal.setAttribute('aria-hidden', 'true');
+    }
+
+    // attach click handlers to cards
+    container.querySelectorAll('.card').forEach(cardEl => {
+      cardEl.addEventListener('click', () => {
+        const idx = Number(cardEl.dataset.index);
+        openModalForIndex(idx);
+      });
+    });
+
+    // modal close behavior
+    modalClose.addEventListener('click', closeModal);
+    modal.addEventListener('click', (ev) => { if (ev.target === modal) closeModal(); });
+    document.addEventListener('keydown', (ev) => { if (ev.key === 'Escape') closeModal(); });
+
+    // DARK MODE
+    const btnDark = document.getElementById('btn-darkmode');
+    btnDark.addEventListener('click', () => {
+      document.body.classList.toggle('dark');
+      btnDark.textContent = document.body.classList.contains('dark') ? "☀️" : "🌙";
+    });
+
+    // BOTÃO TOPO
+    const btnTop = document.getElementById('btn-top');
+    window.addEventListener('scroll', () => {
+      btnTop.style.display = window.scrollY > 200 ? "block" : "none";
+    });
+    btnTop.onclick = () => window.scrollTo({ top: 0, behavior: "smooth" });
+
+    // RELÓGIO
+    function atualizarHora() {
+      const hora = new Date().toLocaleTimeString('pt-PT', { hour: '2-digit', minute: '2-digit' });
+      document.getElementById('hora').textContent = `Hora local: ${hora}`;
+    }
+    setInterval(atualizarHora, 1000); atualizarHora();
+  </script>
+</body>
+</html>

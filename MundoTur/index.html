@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MundoTur - Descobre o Mundo 🌍</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='75' font-size='75'>🌍</text></svg>">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
+    ::-webkit-scrollbar { width: 12px; }
+    ::-webkit-scrollbar-track { background: #f1f1f1; }
+    ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 6px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--dark); }
+    
+    :root {
+      --primary: #ff8c42;
+      --dark: #ff6f00;
+      --accent: #4ecdc4;
+      --light: #f0f8ff;
+      --shadow: 0 10px 30px rgba(0,0,0,0.2);
+      --dark-bg: #1a1a1a;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: linear-gradient(135deg, #fff8f0 0%, #fff4e6 50%, #fff 100%);
+      color: #333;
+      transition: background 0.3s, color 0.3s;
+      position: relative;
+      line-height: 1.6;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: radial-gradient(ellipse at 20% 50%, rgba(255,140,66,0.05) 0%, transparent 50%),
+                  radial-gradient(ellipse at 80% 80%, rgba(78,205,196,0.05) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    /* HEADER */
+    header {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--dark) 100%);
+      color: white;
+      padding: 15px 20px;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: clamp(1.5rem, 4vw, 2.2rem);
+      font-weight: 800;
+      letter-spacing: 1px;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.85; } }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      flex-wrap: wrap;
+      margin: 0;
+      padding: 0;
+      gap: 20px;
+      justify-content: center;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-weight: 600;
+      position: relative;
+      padding: 8px 0;
+      transition: color 0.3s;
+      font-size: clamp(0.9rem, 2vw, 1rem);
+    }
+
+    nav a::after {
+      content: "";
+      position: absolute;
+      width: 0;
+      height: 3px;
+      background: linear-gradient(90deg, #ffe66d, #ff8c42);
+      left: 0;
+      bottom: -5px;
+      transition: width 0.3s;
+      border-radius: 2px;
+    }
+
+    nav a:hover::after, nav a.active::after { width: 100%; }
+
+    .perfil-mini {
+      display: flex;
+      align-items: center;
+      background: rgba(255,255,255,0.25);
+      border-radius: 50px;
+      padding: 6px 14px;
+      gap: 8px;
+      cursor: pointer;
+      transition: all 0.3s;
+      border: 2px solid rgba(255,255,255,0.4);
+    }
+
+    .perfil-mini:hover {
+      background: rgba(255,255,255,0.4);
+      transform: scale(1.08);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+    }
+
+    .perfil-mini img {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: 2px solid white;
+      object-fit: cover;
+    }
+
+    .perfil-mini span {
+      font-weight: 600;
+      color: white;
+      font-size: 0.9rem;
+      white-space: nowrap;
+    }
+
+    /* HERO */
+    .hero {
+      text-align: center;
+      padding: 100px 20px;
+      background: linear-gradient(135deg, rgba(255,140,66,0.2) 0%, rgba(78,205,196,0.1) 100%),
+                  url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1200&h=700&fit=crop') center/cover no-repeat;
+      color: white;
+      position: relative;
+      overflow: hidden;
+      min-height: 600px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(0,0,0,0.25) 0%, rgba(0,0,0,0.45) 100%);
+      z-index: 0;
+    }
+
+    .hero h2 {
+      font-size: clamp(2rem, 8vw, 4rem);
+      margin-bottom: 20px;
+      animation: slideDown 1s ease;
+      font-weight: 800;
+      text-shadow: 3px 3px 12px rgba(0,0,0,0.5);
+      position: relative;
+      z-index: 1;
+      letter-spacing: -1px;
+    }
+
+    .hero p {
+      font-size: clamp(1rem, 3vw, 1.4rem);
+      animation: slideUp 1.2s ease;
+      opacity: 0.95;
+      text-shadow: 2px 2px 6px rgba(0,0,0,0.4);
+      margin-bottom: 30px;
+      position: relative;
+      z-index: 1;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .hero a {
+      display: inline-block;
+      padding: 16px 40px;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--dark) 100%);
+      color: white;
+      text-decoration: none;
+      border-radius: 50px;
+      font-weight: 700;
+      transition: all 0.3s;
+      animation: slideUp 1.4s ease;
+      box-shadow: 0 12px 30px rgba(255,140,66,0.4);
+      position: relative;
+      overflow: hidden;
+      z-index: 2;
+      font-size: 1.05rem;
+      border: 2px solid transparent;
+    }
+
+    .hero a::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(255,255,255,0.15);
+      transform: translateX(-110%);
+      transition: transform 0.35s cubic-bezier(.2,.9,.3,1);
+      z-index: 0;
+    }
+
+    .hero a:hover {
+      transform: translateY(-4px) scale(1.05);
+      box-shadow: 0 16px 40px rgba(255,140,66,0.6);
+    }
+
+    .hero a:hover::before { transform: translateX(0); }
+
+    @keyframes slideDown { from {opacity:0; transform:translateY(-40px);} to {opacity:1; transform:translateY(0);} }
+    @keyframes slideUp { from {opacity:0; transform:translateY(40px);} to {opacity:1; transform:translateY(0);} }
+
+    /* DARK MODE BUTTON */
+    #btn-darkmode {
+      position: fixed;
+      top: 100px;
+      right: 20px;
+      background: rgba(255,255,255,0.9);
+      color: var(--primary);
+      border: 2px solid var(--primary);
+      border-radius: 50%;
+      padding: 12px 14px;
+      cursor: pointer;
+      font-size: 1.3rem;
+      box-shadow: var(--shadow);
+      z-index: 2000;
+      transition: all 0.3s;
+    }
+
+    #btn-darkmode:hover {
+      background: var(--primary);
+      color: white;
+      transform: scale(1.1) rotate(20deg);
+      box-shadow: 0 8px 25px rgba(255,140,66,0.4);
+    }
+
+    /* CAROUSEL */
+    .carrossel {
+      position: relative;
+      max-width: 1000px;
+      margin: 60px auto 40px;
+      overflow: hidden;
+      border-radius: 20px;
+      box-shadow: var(--shadow);
+      aspect-ratio: 16/9;
+      background: linear-gradient(135deg, var(--primary), var(--dark));
+    }
+
+    .slides img {
+      width: 100%;
+      height: 100%;
+      display: none;
+      border-radius: 20px;
+      object-fit: cover;
+      animation: fadeInScale 0.6s ease;
+    }
+
+    @keyframes fadeInScale {
+      from {
+        opacity: 0;
+        transform: scale(1.05);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    .active-slide { display: block !important; }
+
+    .prev, .next {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background-color: rgba(255,255,255,0.9);
+      border: none;
+      padding: 12px;
+      font-size: 22px;
+      cursor: pointer;
+      border-radius: 50%;
+      transition: all 0.3s;
+      z-index: 10;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 50px;
+      height: 50px;
+    }
+
+    .prev:hover, .next:hover {
+      background-color: var(--primary);
+      color: white;
+      transform: translateY(-50%) scale(1.15);
+      box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+    }
+
+    .prev { left: 20px; }
+    .next { right: 20px; }
+
+    /* FEATURES */
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 30px;
+      padding: 80px 40px;
+      max-width: 1200px;
+      margin: 40px auto;
+      background: linear-gradient(135deg, rgba(255,140,66,0.08) 0%, rgba(78,205,196,0.08) 100%);
+      border-radius: 25px;
+    }
+
+    .feature-card {
+      text-align: center;
+      padding: 35px;
+      background: white;
+      border-radius: 18px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+      transition: all 0.4s cubic-bezier(.2,.9,.3,1);
+      border-top: 5px solid var(--primary);
+      animation: slideUp 0.6s ease-out forwards;
+      opacity: 0;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .feature-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.4), transparent);
+      opacity: 0;
+      transition: opacity 0.4s;
+      z-index: -1;
+    }
+
+    .feature-card:hover::before { opacity: 1; }
+
+    .feature-card:nth-child(1) { animation-delay: 0.1s; }
+    .feature-card:nth-child(2) { animation-delay: 0.2s; }
+    .feature-card:nth-child(3) { animation-delay: 0.3s; }
+    .feature-card:nth-child(4) { animation-delay: 0.4s; }
+
+    .feature-card:hover {
+      transform: translateY(-12px) scale(1.02);
+      box-shadow: var(--shadow);
+      border-top-color: var(--accent);
+    }
+
+    .feature-card h3 {
+      color: var(--primary);
+      margin-bottom: 15px;
+      font-size: 1.35rem;
+      position: relative;
+      display: inline-block;
+      font-weight: 700;
+    }
+
+    .feature-card h3::after {
+      content: "";
+      position: absolute;
+      bottom: -8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+      transition: width 0.4s;
+      border-radius: 2px;
+    }
+
+    .feature-card:hover h3::after { width: 80%; }
+
+    .feature-card p {
+      color: #666;
+      line-height: 1.7;
+      font-size: 0.96rem;
+      margin-bottom: 0;
+    }
+
+    .feature-icon {
+      font-size: 3rem;
+      margin-bottom: 18px;
+      display: inline-block;
+      animation: float 3s ease-in-out infinite;
+      transition: transform 0.3s;
+    }
+
+    .feature-card:hover .feature-icon { transform: scale(1.15) rotate(5deg); }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-12px); }
+    }
+
+    /* BACK TO TOP */
+    #btn-top {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 12px 14px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 20px;
+      display: none;
+      box-shadow: var(--shadow);
+      transition: all 0.3s;
+      z-index: 1999;
+      width: 50px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #btn-top:hover {
+      background: var(--dark);
+      transform: translateY(-3px);
+    }
+
+    #btn-top.show { display: flex; }
+
+    /* FOOTER */
+    footer {
+      text-align: center;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--dark) 100%);
+      color: white;
+      padding: 30px 20px;
+      font-size: 0.95rem;
+      margin-top: 80px;
+      border-top: 4px solid var(--accent);
+    }
+
+    footer span { font-weight: 700; }
+
+    /* DARK MODE */
+    body.dark {
+      background: var(--dark-bg);
+      color: #eee;
+    }
+
+    body.dark header, body.dark footer {
+      filter: brightness(0.9);
+    }
+
+    body.dark #btn-darkmode {
+      background: var(--primary);
+      color: white;
+      border-color: white;
+    }
+
+    body.dark .feature-card {
+      background: #2c2c2c;
+      box-shadow: 0 4px 12px rgba(255,255,255,0.05);
+    }
+
+    body.dark .feature-card p { color: #cbd5e1; }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      header {
+        flex-direction: column;
+        gap: 15px;
+      }
+
+      .prev, .next {
+        padding: 8px;
+        font-size: 18px;
+        width: 40px;
+        height: 40px;
+      }
+
+      .features {
+        padding: 40px 20px;
+        gap: 20px;
+      }
+
+      .hero {
+        min-height: 500px;
+        padding: 60px 20px;
+      }
+    }
+
+    /* Accessibility */
+    .skip-link {
+      position: absolute;
+      left: 8px;
+      top: 8px;
+      background: #111;
+      color: #fff;
+      padding: 8px 12px;
+      border-radius: 6px;
+      z-index: 4000;
+      transform: translateY(-120%);
+      transition: transform 0.25s;
+    }
+
+    .skip-link:focus {
+      transform: translateY(0);
+      outline: 3px solid var(--accent);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; }
+    }
+  </style>
+</head>
+
+<body>
+  <a class="skip-link" href="#main-content">Saltar para o conteúdo</a>
+
+  <header>
+    <h1>🌍 MundoTur</h1>
+    <nav>
+      <ul>
+        <li><a href="index.html" class="active">Início</a></li>
+        <li><a href="destinos.html">Destinos</a></li>
+        <li><a href="desejo.html">Desejo</a></li>
+        <li><a href="quiz.html">Quiz</a></li>
+        <li><a href="contacto.html">Contacto</a></li>
+        <li><a href="perfil.html">Perfil</a></li>
+      </ul>
+    </nav>
+    <div id="perfil-mini" class="perfil-mini" onclick="window.location='perfil.html'" role="button" tabindex="0">
+      <img id="mini-foto" src="https://i.imgur.com/4Z6P3dF.png" alt="Avatar do perfil">
+      <span id="mini-nome">Olá!</span>
+    </div>
+  </header>
+
+  <button id="btn-darkmode" title="Alternar modo claro/escuro">🌙</button>
+
+  <main id="main-content">
+    <section class="hero">
+      <h2>Explora o Mundo com a MundoTur!</h2>
+      <p>Descobre destinos incríveis, responde ao nosso quiz e planeia a tua próxima aventura.</p>
+      <a href="destinos.html">Explorar Destinos →</a>
+    </section>
+
+    <section class="carrossel" role="region" aria-label="Carrossel de imagens destacadas">
+      <div class="slides">
+        <img class="active-slide" src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1000&h=600&fit=crop" alt="Praia tropical com água cristalina" loading="lazy">
+        <img src="https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=1000&h=600&fit=crop" alt="Cidade europeia com arquitetura histórica" loading="lazy">
+        <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1000&h=600&fit=crop" alt="Montanhas nevadas e paisagem selvagem" loading="lazy">
+      </div>
+      <button class="prev" aria-label="Imagem anterior">❮</button>
+      <button class="next" aria-label="Próxima imagem">❯</button>
+    </section>
+
+    <section class="features">
+      <div class="feature-card">
+        <div class="feature-icon">🌍</div>
+        <h3>Destinos Únicos</h3>
+        <p>Explora 6 destinos maravilhosos ao redor do mundo com descrições detalhadas e inspiração para a tua próxima viagem.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🧭</div>
+        <h3>Quiz Interativo</h3>
+        <p>Testa os teus conhecimentos de turismo! Responde a 5 perguntas sobre destinos e geografia mundial.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">💬</div>
+        <h3>Contacte-nos</h3>
+        <p>Tem dúvidas ou sugestões? Entra em contacto connosco através do nosso formulário seguro.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">👤</div>
+        <h3>Perfil Personalizado</h3>
+        <p>Cria o teu perfil, guarda os teus dados e personaliza a tua experiência na MundoTur.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2025 MundoTur | <span id="hora">Hora local: --:--</span></p>
+  </footer>
+
+  <button id="btn-top" aria-label="Voltar ao topo">↑</button>
+
+  <script>
+    // Carousel
+    const slides = document.querySelectorAll('.slides img');
+    let index = 0;
+
+    function showSlide(i) {
+      slides.forEach(s => s.classList.remove('active-slide'));
+      slides[i % slides.length].classList.add('active-slide');
+    }
+
+    document.querySelector('.next').addEventListener('click', () => {
+      index = (index + 1) % slides.length;
+      showSlide(index);
+    });
+
+    document.querySelector('.prev').addEventListener('click', () => {
+      index = (index - 1 + slides.length) % slides.length;
+      showSlide(index);
+    });
+
+    // Auto-rotate carousel
+    setInterval(() => {
+      index = (index + 1) % slides.length;
+      showSlide(index);
+    }, 5000);
+
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight') { index = (index + 1) % slides.length; showSlide(index); }
+      if (e.key === 'ArrowLeft') { index = (index - 1 + slides.length) % slides.length; showSlide(index); }
+    });
+
+    // Dark Mode
+    const btnDark = document.getElementById('btn-darkmode');
+    const darkMode = localStorage.getItem('darkMode') === 'true';
+    if (darkMode) {
+      document.body.classList.add('dark');
+      btnDark.textContent = "☀️";
+    }
+
+    btnDark.addEventListener('click', () => {
+      document.body.classList.toggle('dark');
+      const isDark = document.body.classList.contains('dark');
+      localStorage.setItem('darkMode', isDark);
+      btnDark.textContent = isDark ? "☀️" : "🌙";
+    });
+
+    // Back to top button
+    const btnTop = document.getElementById('btn-top');
+    window.addEventListener('scroll', () => {
+      btnTop.classList.toggle('show', window.scrollY > 200);
+    });
+
+    btnTop.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    // Clock
+    function updateClock() {
+      const now = new Date();
+      const time = now.toLocaleTimeString('pt-PT', { hour: '2-digit', minute: '2-digit' });
+      document.getElementById('hora').textContent = `Hora local: ${time}`;
+    }
+
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    // Profile mini display
+    const miniNome = document.getElementById('mini-nome');
+    const miniFoto = document.getElementById('mini-foto');
+    const nomeGuardado = localStorage.getItem('perfilNome');
+    const fotoGuardada = localStorage.getItem('perfilFoto');
+
+    if (nomeGuardado) miniNome.textContent = `Olá, ${nomeGuardado.split(' ')[0]}!`;
+    if (fotoGuardada) miniFoto.src = fotoGuardada;
+
+    // Keyboard accessibility for profile mini
+    document.getElementById('perfil-mini').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') window.location = 'perfil.html';
+    });
+  </script>
+</body>
+</html>

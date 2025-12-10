@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Meu Perfil - MundoTur</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
+    ::-webkit-scrollbar { width: 12px; }
+    ::-webkit-scrollbar-track { background: #f1f1f1; }
+    ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 6px; }
+
+    :root {
+      --primary: #ff8c42;
+      --dark: #ff6f00;
+      --accent: #4ecdc4;
+      --shadow: 0 10px 30px rgba(0,0,0,0.2);
+      --dark-bg: #1a1a1a;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Poppins', -apple-system, sans-serif;
+      background: linear-gradient(135deg, #fff8f0 0%, #fff4e6 50%, #fff 100%);
+      color: #333;
+      transition: all 0.3s;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(ellipse at 20% 50%, rgba(255,140,66,0.05) 0%, transparent 50%),
+                  radial-gradient(ellipse at 80% 80%, rgba(78,205,196,0.05) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    header {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--dark) 100%);
+      color: white;
+      padding: 20px;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    }
+
+    header h1 {
+      text-align: center;
+      margin-bottom: 15px;
+      font-size: 2rem;
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin: 0;
+      padding: 0;
+      gap: 20px;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-weight: 600;
+      position: relative;
+      padding: 8px 0;
+    }
+
+    nav a::after {
+      content: "";
+      position: absolute;
+      width: 0;
+      height: 3px;
+      background: linear-gradient(90deg, #ffe66d, #ff8c42);
+      left: 0;
+      bottom: -5px;
+      transition: width 0.3s;
+    }
+
+    nav a:hover::after, nav a.active::after { width: 100%; }
+
+    .container {
+      max-width: 600px;
+      margin: 50px auto;
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+      padding: 40px;
+      animation: slideUp 0.8s ease;
+    }
+
+    @keyframes slideUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+
+    .profile-section {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .profile-picture {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      border: 5px solid var(--primary);
+      margin: 0 auto 20px;
+      object-fit: cover;
+      cursor: pointer;
+      transition: all 0.3s;
+      box-shadow: 0 8px 20px rgba(255,140,66,0.3);
+    }
+
+    .profile-picture:hover {
+      transform: scale(1.1);
+      box-shadow: 0 12px 30px rgba(255,140,66,0.5);
+    }
+
+    #file-input { display: none; }
+
+    h2 {
+      color: var(--primary);
+      font-size: 1.8rem;
+      margin-bottom: 30px;
+      position: relative;
+      padding-bottom: 15px;
+    }
+
+    h2::after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60px;
+      height: 4px;
+      background: var(--accent);
+      border-radius: 2px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+      animation: slideUp 0.8s ease forwards;
+      opacity: 0;
+    }
+
+    .form-group:nth-child(1) { animation-delay: 0.1s; }
+    .form-group:nth-child(2) { animation-delay: 0.2s; }
+    .form-group:nth-child(3) { animation-delay: 0.3s; }
+    .form-group:nth-child(4) { animation-delay: 0.4s; }
+    .form-group:nth-child(5) { animation-delay: 0.5s; }
+    .form-group:nth-child(6) { animation-delay: 0.6s; }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: #333;
+      font-size: 0.95rem;
+    }
+
+    input, textarea, select {
+      width: 100%;
+      padding: 12px 14px;
+      border: 2px solid #e0e0e0;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      font-family: inherit;
+      transition: all 0.3s;
+      background: #f9f9f9;
+    }
+
+    input:focus, textarea:focus, select:focus {
+      outline: none;
+      border-color: var(--primary);
+      background: white;
+      box-shadow: 0 0 0 3px rgba(255,140,66,0.1);
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    .form-buttons {
+      display: flex;
+      gap: 15px;
+      margin-top: 30px;
+      justify-content: center;
+    }
+
+    button {
+      padding: 12px 28px;
+      border: none;
+      border-radius: 10px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-size: 0.95rem;
+      min-width: 120px;
+    }
+
+    #btn-save {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--dark) 100%);
+      color: white;
+      box-shadow: 0 6px 20px rgba(255,140,66,0.3);
+    }
+
+    #btn-save:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 28px rgba(255,140,66,0.4);
+    }
+
+    #btn-limpar {
+      background: #e0e0e0;
+      color: #333;
+      border: 2px solid #d0d0d0;
+    }
+
+    #btn-limpar:hover {
+      background: #d0d0d0;
+      transform: scale(1.02);
+    }
+
+    .success-message {
+      display: none;
+      padding: 15px;
+      background: rgba(50,205,50,0.15);
+      border-left: 4px solid limegreen;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      color: #2d7a2d;
+      font-weight: 600;
+      animation: slideUp 0.5s ease;
+    }
+
+    footer {
+      text-align: center;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--dark) 100%);
+      color: white;
+      padding: 20px;
+      margin-top: 50px;
+    }
+
+    #btn-darkmode {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: rgba(255,255,255,0.9);
+      color: var(--primary);
+      border: 2px solid var(--primary);
+      border-radius: 50%;
+      padding: 12px 14px;
+      font-size: 1.2rem;
+      cursor: pointer;
+      z-index: 2000;
+      box-shadow: var(--shadow);
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 50px;
+      height: 50px;
+    }
+
+    #btn-darkmode:hover {
+      background: var(--primary);
+      color: white;
+      transform: scale(1.1) rotate(20deg);
+    }
+
+    body.dark { background: var(--dark-bg); color: #eee; }
+    body.dark .container { background: #2c2c2c; }
+    body.dark input, body.dark textarea, body.dark select { background: #3c3c3c; border-color: #444; color: #eee; }
+    body.dark label { color: #eee; }
+    body.dark #btn-darkmode { background: var(--primary); color: white; border-color: white; }
+
+    @media (max-width: 768px) {
+      .container { margin: 20px; padding: 20px; }
+      .form-buttons { flex-direction: column; }
+      button { width: 100%; }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>👤 Meu Perfil</h1>
+    <nav>
+      <ul>
+        <li><a href="index.html">Início</a></li>
+        <li><a href="destinos.html">Destinos</a></li>
+        <li><a href="desejo.html">Desejo</a></li>
+        <li><a href="quiz.html">Quiz</a></li>
+        <li><a href="contacto.html">Contacto</a></li>
+        <li><a href="perfil.html" class="active">Perfil</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <button id="btn-darkmode" title="Alternar modo claro/escuro">🌙</button>
+
+  <main class="container">
+    <div class="profile-section">
+      <img id="profile-picture" class="profile-picture" src="https://i.imgur.com/4Z6P3dF.png" alt="Foto de perfil" onclick="document.getElementById('file-input').click()">
+      <input type="file" id="file-input" accept="image/*">
+      <p style="font-size: 0.9rem; color: #666; margin-top: 10px;">Clica na foto para mudar</p>
+    </div>
+
+    <h2>Editar Perfil</h2>
+    <div class="success-message" id="success-msg">✓ Perfil atualizado com sucesso!</div>
+
+    <form id="form-perfil">
+      <div class="form-group">
+        <label for="nome">Nome Completo *</label>
+        <input type="text" id="nome" name="nome" placeholder="João Silva" required>
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email *</label>
+        <input type="email" id="email" name="email" placeholder="joao@exemplo.com" required>
+      </div>
+
+      <div class="form-group">
+        <label for="idade">Idade</label>
+        <input type="number" id="idade" name="idade" placeholder="25" min="1" max="120">
+      </div>
+
+      <div class="form-group">
+        <label for="pais">País</label>
+        <input type="text" id="pais" name="pais" placeholder="Portugal">
+      </div>
+
+      <div class="form-group">
+        <label for="bio">Biografia</label>
+        <textarea id="bio" name="bio" placeholder="Conta-nos um pouco sobre ti..."></textarea>
+      </div>
+
+      <div class="form-buttons">
+        <button type="submit" id="btn-save">💾 Guardar Perfil</button>
+        <button type="button" id="btn-limpar">🔄 Limpar</button>
+      </div>
+    </form>
+  </main>
+
+  <footer>© 2025 MundoTur</footer>
+
+  <script>
+    const form = document.getElementById('form-perfil');
+    const fileInput = document.getElementById('file-input');
+    const profilePic = document.getElementById('profile-picture');
+    const successMsg = document.getElementById('success-msg');
+
+    // Load profile from localStorage
+    window.addEventListener('load', () => {
+      const saved = localStorage.getItem('perfilData');
+      if (saved) {
+        const data = JSON.parse(saved);
+        document.getElementById('nome').value = data.nome || '';
+        document.getElementById('email').value = data.email || '';
+        document.getElementById('idade').value = data.idade || '';
+        document.getElementById('pais').value = data.pais || '';
+        document.getElementById('bio').value = data.bio || '';
+      }
+
+      const foto = localStorage.getItem('perfilFoto');
+      if (foto) profilePic.src = foto;
+    });
+
+    // Save profile
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const data = {
+        nome: document.getElementById('nome').value,
+        email: document.getElementById('email').value,
+        idade: document.getElementById('idade').value,
+        pais: document.getElementById('pais').value,
+        bio: document.getElementById('bio').value
+      };
+
+      localStorage.setItem('perfilData', JSON.stringify(data));
+      localStorage.setItem('perfilNome', data.nome);
+
+      successMsg.style.display = 'block';
+      setTimeout(() => {
+        successMsg.style.display = 'none';
+      }, 3000);
+    });
+
+    // Clear form
+    document.getElementById('btn-limpar').addEventListener('click', () => {
+      form.reset();
+    });
+
+    // Profile picture upload
+    fileInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          const imgData = event.target.result;
+          profilePic.src = imgData;
+          localStorage.setItem('perfilFoto', imgData);
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    // Dark mode
+    const btnDark = document.getElementById('btn-darkmode');
+    const darkMode = localStorage.getItem('darkMode') === 'true';
+    if (darkMode) {
+      document.body.classList.add('dark');
+      btnDark.textContent = "☀️";
+    }
+
+    btnDark.addEventListener('click', () => {
+      document.body.classList.toggle('dark');
+      const isDark = document.body.classList.contains('dark');
+      localStorage.setItem('darkMode', isDark);
+      btnDark.textContent = isDark ? "☀️" : "🌙";
+    });
+  </script>
+</body>
+</html>

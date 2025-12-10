@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contacto - MundoTur</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
+    ::-webkit-scrollbar { width: 10px; }
+    ::-webkit-scrollbar-track { background: #f1f1f1; }
+    ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 5px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--dark); }
+    :root {
+      --primary: #ff8c42; --dark: #ff6f00; --accent: #4ecdc4;
+      --shadow: 0 10px 30px rgba(0,0,0,0.2);
+    }
+    body {
+      font-family: 'Poppins', -apple-system, sans-serif;
+      margin: 0;
+      background: linear-gradient(135deg, #fff8f0 0%, #fff 100%);
+      color: #333;
+      transition: 0.3s;
+    }
+
+    /* ===== HEADER ===== */
+    header, footer {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--dark) 100%);
+      color: white;
+      text-align: center;
+      padding: 20px 10px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    }
+    nav ul {
+      list-style: none;
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin: 0;
+      padding: 0;
+      gap: 20px;
+    }
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-weight: 600;
+      position: relative;
+      padding: 8px 0;
+    }
+    nav a::after {
+      content: "";
+      position: absolute;
+      width: 0;
+      height: 3px;
+      background: linear-gradient(90deg, #ffe66d, #ff8c42);
+      left: 0;
+      bottom: -5px;
+      transition: width 0.3s;
+    }
+    nav a:hover::after, nav a.active::after { width: 100%; }
+
+    /* ===== FORMULÁRIO ===== */
+    main {
+      max-width: 650px;
+      margin: 60px auto;
+      background: rgba(255, 255, 255, 0.97);
+      padding: 45px;
+      border-radius: 22px;
+      box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+      animation: slideIn 0.6s ease;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+    @keyframes slideIn { from {opacity: 0; transform: translateY(30px);} to {opacity: 1; transform: translateY(0);} }
+    h2 { 
+      text-align: center; 
+      color: var(--primary); 
+      margin-bottom: 30px; 
+      font-size: 2rem;
+      position: relative;
+      padding-bottom: 18px;
+      font-weight:800;
+      letter-spacing:0.5px;
+    }
+    h2::after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80px;
+      height: 5px;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+      border-radius: 3px;
+      box-shadow:0 4px 12px rgba(255,140,66,0.2);
+    }
+    form { display: flex; flex-direction: column; gap: 18px; }
+    label { font-weight: 700; color: #555; font-size: 0.96rem; margin-top: 12px; display: block; position: relative; padding-left: 6px; }
+    label::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      width: 3px;
+      height: 0;
+      background: var(--primary);
+      transition: height 0.4s;
+      border-radius:2px;
+    }
+    label:hover::before {
+      height: 100%;
+    }
+    input, textarea {
+      padding: 13px 16px;
+      border: 2px solid #e0e0e0;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-family: inherit;
+      transition: all 0.3s;
+      background: #fafafa;
+    }
+    input::placeholder, textarea::placeholder {
+      color: #ccc;
+      transition: color 0.3s;
+    }
+    input:focus::placeholder, textarea:focus::placeholder {
+      color: var(--primary);
+    }
+    input:focus, textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+      background: white;
+      box-shadow: 0 0 0 4px rgba(255,140,66,0.12);
+    }
+    button {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--dark) 100%);
+      color: white;
+      border: none;
+      padding: 15px 28px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 1.05rem;
+      font-weight: 700;
+      transition: all 0.3s;
+      margin-top: 8px;
+      position: relative;
+      overflow: hidden;
+      box-shadow:0 6px 20px rgba(255,140,66,0.3);
+      letter-spacing:0.5px;
+    }
+    button::before {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.3);
+      transform: translate(-50%, -50%);
+      transition: width 0.6s, height 0.6s;
+    }
+    button:active::before {
+      width: 300px;
+      height: 300px;
+    }
+    button:hover { 
+      transform: translateY(-3px); 
+      box-shadow: 0 10px 28px rgba(255,140,66,0.4);
+    }
+
+    /* ===== CAPTCHA ===== */
+    .captcha {
+      margin-top: 20px;
+      padding: 15px;
+      background: #f5f5f5;
+      border-radius: 10px;
+    }
+    .captcha-box {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background-color: white;
+      border-radius: 8px;
+      padding: 12px;
+      margin: 10px 0;
+      border: 2px solid #ddd;
+    }
+    #captcha-text {
+      font-family: 'Courier New', monospace;
+      font-weight: bold;
+      font-size: 1.3rem;
+      background: #f9f9f9;
+      padding: 8px 15px;
+      border-radius: 6px;
+      letter-spacing: 4px;
+      color: var(--primary);
+      user-select: none;
+    }
+    #btn-refresh {
+      background: none;
+      border: none;
+      font-size: 1.4rem;
+      cursor: pointer;
+      color: var(--primary);
+      transition: transform 0.3s;
+      padding: 5px;
+    }
+    #btn-refresh:hover { transform: rotate(180deg); }
+    #msg-resultado {
+      text-align: center;
+      font-weight: 700;
+      margin-top: 15px;
+      padding: 15px;
+      border-radius: 10px;
+      transition: all 0.5s ease;
+      animation: slideUp 0.5s ease;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    @keyframes slideUp { from {opacity:0; transform:translateY(20px);} to {opacity:1; transform:translateY(0);} }
+    footer { margin-top: 50px; font-size: 0.9rem; border-top: 4px solid var(--accent); }
+    body.dark { background: #1a1a1a; color: #eee; }
+    body.dark main { background: #2c2c2c; }
+    body.dark input, body.dark textarea { background: #333; color: white; border-color: #444; }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>MundoTur</h1>
+    <nav>
+      <ul>
+        <li><a href="index.html">Início</a></li>
+        <li><a href="destinos.html">Destinos</a></li>
+        <li><a href="desejo.html">Desejo</a></li>
+        <li><a href="quiz.html">Quiz</a></li>
+        <li><a href="contacto.html" class="active">Contacto</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <h2>📬 Fala connosco</h2>
+    <form id="form-contacto">
+      <label for="nome">Nome:</label>
+      <input type="text" id="nome" required>
+
+      <label for="email">Email:</label>
+      <input type="email" id="email" required>
+
+      <label for="assunto">Assunto:</label>
+      <input type="text" id="assunto" required>
+
+      <label for="mensagem">Mensagem:</label>
+      <textarea id="mensagem" rows="4" required></textarea>
+
+      <!-- CAPTCHA -->
+      <div class="captcha">
+        <label>Confirma que és humano:</label>
+        <div class="captcha-box">
+          <span id="captcha-text"></span>
+          <button type="button" id="btn-refresh" title="Novo código">↻</button>
+        </div>
+        <input type="text" id="captcha-input" placeholder="Escreve o código acima" required>
+      </div>
+
+      <button type="submit">Enviar mensagem</button>
+    </form>
+
+    <p id="msg-resultado"></p>
+  </main>
+
+  <footer>© 2025 MundoTur - Todos os direitos reservados</footer>
+
+  <script>
+    // ===== CAPTCHA =====
+    const captchaTexto = document.getElementById("captcha-text");
+    const captchaInput = document.getElementById("captcha-input");
+    const msgResultado = document.getElementById("msg-resultado");
+    const form = document.getElementById("form-contacto");
+
+    function gerarCaptcha() {
+      const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+      let codigo = "";
+      for (let i = 0; i < 5; i++) {
+        codigo += chars.charAt(Math.floor(Math.random() * chars.length));
+      }
+      captchaTexto.textContent = codigo;
+    }
+
+    gerarCaptcha();
+    document.getElementById("btn-refresh").addEventListener("click", gerarCaptcha);
+
+    // ===== FORMULÁRIO =====
+    form.addEventListener("submit", e => {
+      e.preventDefault();
+      const nome = document.getElementById("nome").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const assunto = document.getElementById("assunto").value.trim();
+      const mensagem = document.getElementById("mensagem").value.trim();
+      const codigo = captchaTexto.textContent;
+      const entrada = captchaInput.value.trim().toUpperCase();
+
+      if (!nome || !email || !assunto || !mensagem) {
+        mostrarMensagem("Por favor, preenche todos os campos.", "red");
+        return;
+      }
+
+      if (entrada !== codigo) {
+        mostrarMensagem("Captcha incorreto. Tenta novamente.", "red");
+        gerarCaptcha();
+        captchaInput.value = "";
+        return;
+      }
+
+      mostrarMensagem("Mensagem enviada com sucesso! ✅", "green");
+      form.reset();
+      gerarCaptcha();
+    });
+
+    function mostrarMensagem(texto, cor) {
+      msgResultado.style.color = cor;
+      msgResultado.style.opacity = 0;
+      msgResultado.textContent = texto;
+      setTimeout(() => (msgResultado.style.opacity = 1), 100);
+      setTimeout(() => (msgResultado.style.opacity = 0), 4000);
+    }
+  </script>
+</body>
+</html>

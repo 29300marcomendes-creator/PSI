@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Desejo — MundoTur</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='75' font-size='75'>✨</text></svg>">
+  <style>
+    :root{ --primary:#ff8c42; --dark:#ff6f00; --accent:#4ecdc4; --shadow:0 10px 30px rgba(0,0,0,0.2); }
+    *{margin:0; padding:0; box-sizing:border-box; scroll-behavior:smooth}
+    ::-webkit-scrollbar { width: 10px; }
+    ::-webkit-scrollbar-track { background: #f1f1f1; }
+    ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 5px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--dark); }
+    
+    body{font-family:'Poppins', -apple-system, sans-serif; background:linear-gradient(135deg, #fff8f0 0%, #fff4e6 50%, #fff 100%); color:#333; transition:0.3s; position:relative}
+    body::before{content:""; position:fixed; top:0; left:0; right:0; bottom:0; background:radial-gradient(ellipse at 20% 50%, rgba(255,140,66,0.05) 0%, transparent 50%), radial-gradient(ellipse at 80% 80%, rgba(78,205,196,0.05) 0%, transparent 50%); pointer-events:none; z-index:-1}
+    
+    header{background:linear-gradient(135deg, var(--primary) 0%, var(--dark) 100%); color:white; padding:20px 30px; position:sticky; top:0; z-index:1000; box-shadow:0 4px 15px rgba(0,0,0,0.2); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:20px}
+    header h1{font-size:1.6rem; font-weight:800; margin:0; letter-spacing:1px}
+    nav{display:flex; gap:20px; flex-wrap:wrap}
+    nav a{color:white; text-decoration:none; font-weight:600; position:relative; padding:8px 0; transition:0.3s}
+    nav a::after{content:""; position:absolute; width:0; height:3px; background:linear-gradient(90deg,#ffe66d,#ff8c42); left:0; bottom:-5px; transition:width 0.3s}
+    nav a:hover::after, nav a[aria-current]::after{width:100%}
+
+    .container{max-width:1200px; margin:50px auto; padding:0 20px}
+    .panel{display:grid; grid-template-columns:1fr 380px; gap:40px; align-items:start}
+    
+    .wish-card{background:rgba(255,255,255,0.95); border-radius:18px; padding:35px; box-shadow:var(--shadow); border:1px solid rgba(0,0,0,0.04); animation:slideUp 0.6s ease}
+    @keyframes slideUp{from{opacity:0; transform:translateY(20px)}to{opacity:1; transform:translateY(0)}}
+    h2{color:var(--primary); margin:0 0 15px; font-size:1.6rem; font-weight:700}
+    h3{color:var(--primary); margin:0 0 15px; font-size:1.2rem; font-weight:700}
+    p.lead{color:#666; margin:0 0 25px; line-height:1.6; font-size:0.95rem}
+
+    label{display:block; font-weight:600; color:#555; margin-bottom:8px; margin-top:15px; font-size:0.95rem}
+    input[type=text], select, input[type=number]{width:100%; padding:12px 15px; border-radius:10px; border:2px solid #e0e0e0; background:#fafafa; color:#333; font-family:inherit; font-size:1rem; transition:all 0.3s}
+    input[type=text]:focus, select:focus, input[type=number]:focus{outline:none; border-color:var(--primary); background:white; box-shadow:0 0 0 3px rgba(255,140,66,0.1)}
+    textarea{width:100%; min-height:110px; padding:12px 15px; border-radius:10px; border:2px solid #e0e0e0; background:#fafafa; color:#333; font-family:inherit; font-size:1rem; transition:all 0.3s; resize:vertical}
+    textarea:focus{outline:none; border-color:var(--primary); background:white; box-shadow:0 0 0 3px rgba(255,140,66,0.1)}
+
+    .button-row{display:flex; gap:12px; margin-top:20px; flex-wrap:wrap}
+    button.primary{background:linear-gradient(135deg, var(--primary) 0%, var(--dark) 100%); border:none; padding:14px 28px; border-radius:10px; color:white; font-weight:700; cursor:pointer; font-size:1rem; transition:all 0.3s; box-shadow:0 4px 15px rgba(255,140,66,0.2); position:relative; overflow:hidden}
+    button.primary::before{content:""; position:absolute; top:50%; left:50%; width:0; height:0; border-radius:50%; background:rgba(255,255,255,0.3); transform:translate(-50%,-50%); transition:width 0.6s, height 0.6s}
+    button.primary:hover{transform:translateY(-2px); box-shadow:0 8px 25px rgba(255,140,66,0.3)}
+    button.primary:active::before{width:300px; height:300px}
+    
+    button.ghost{background:transparent; border:2px solid #e0e0e0; color:#666; padding:12px 20px; border-radius:10px; cursor:pointer; font-weight:600; font-size:1rem; transition:all 0.3s}
+    button.ghost:hover{border-color:var(--primary); color:var(--primary)}
+
+    .help{font-size:0.9rem; color:#999; margin-top:15px; line-height:1.5}
+
+    .results-section{margin-top:35px}
+    .chosen-banner{margin-top:12px;padding:12px;border-radius:10px;background:linear-gradient(90deg, rgba(255,140,66,0.06), rgba(78,205,196,0.03));border:1px solid rgba(255,140,66,0.12);font-weight:700;color:#333;text-align:center}
+    .offer.selected{outline:3px solid rgba(255,140,66,0.12); box-shadow:0 12px 30px rgba(255,140,66,0.08); transform:translateY(-6px)}
+    .recommendations{display:grid; gap:16px; margin-top:20px}
+    .offer{display:flex; align-items:flex-start; gap:16px; padding:16px; border-radius:14px; background:white; border:1px solid #e0e0e0; transition:all 0.3s; animation:fadeIn 0.5s ease}
+    @keyframes fadeIn{from{opacity:0; transform:translateY(10px)}to{opacity:1; transform:translateY(0)}}
+    .offer:hover{box-shadow:0 8px 20px rgba(0,0,0,0.1); transform:translateY(-4px)}
+    .offer img{width:140px; height:100px; object-fit:cover; border-radius:10px; flex-shrink:0}
+    .offer-text h4{margin:0 0 6px; color:var(--primary); font-size:1.05rem; font-weight:700}
+    .meta{color:#666; font-size:0.93rem; line-height:1.5}
+    .price{margin-left:auto; text-align:right; min-width:110px; display:flex; flex-direction:column; justify-content:center}
+    .price b{display:block; color:var(--primary); font-size:1.3rem; font-weight:700; margin-bottom:8px}
+    .price a{color:var(--primary); display:block; text-decoration:none; font-weight:600; font-size:0.9rem; transition:0.3s}
+    .price a:hover{text-decoration:underline}
+
+    .sidebar{position:relative}
+    .chip-group{display:flex; flex-wrap:wrap; gap:10px; margin-top:12px}
+    .chip{display:inline-block; padding:8px 14px; border-radius:20px; background:white; border:2px solid #e0e0e0; color:#666; cursor:pointer; font-weight:600; font-size:0.9rem; transition:all 0.3s}
+    .chip:hover{border-color:var(--primary); color:var(--primary); background:rgba(255,140,66,0.05)}
+
+    .history{margin-top:20px; background:white; padding:18px; border-radius:14px; border:1px solid #e0e0e0}
+    .history-item{margin-top:10px; padding-top:10px; border-top:1px solid #e0e0e0; font-size:0.9rem; color:#666; line-height:1.4}
+    .history-item:first-child{margin-top:0; padding-top:0; border-top:none}
+
+    footer{max-width:1200px; margin:60px auto; padding:30px 20px 0; color:#999; font-size:0.9rem; text-align:center; border-top:1px solid #e0e0e0}
+
+    #btn-darkmode{position:fixed; top:20px; right:20px; background:rgba(255,255,255,0.9); color:var(--primary); border:2px solid var(--primary); border-radius:50%; padding:12px 14px; cursor:pointer; font-size:1.3rem; z-index:2000; box-shadow:var(--shadow); transition:all 0.3s}
+    #btn-darkmode:hover{background:var(--primary); color:white; transform:scale(1.1) rotate(20deg)}
+
+    /* DARK MODE */
+    body.dark{background:linear-gradient(135deg, #1a1a1a 0%, #2c2c2c 100%); color:#eee}
+    body.dark header, body.dark footer{filter:brightness(0.9)}
+    body.dark .wish-card{background:#2c2c2c; box-shadow:0 4px 12px rgba(255,255,255,0.05)}
+    body.dark input, body.dark select, body.dark textarea{background:#333; color:#eee; border-color:#444}
+    body.dark input:focus, body.dark select:focus, body.dark textarea:focus{background:#333; border-color:var(--primary)}
+    body.dark .offer{background:#2c2c2c; border-color:#444}
+    body.dark .chip{background:#333; border-color:#444; color:#eee}
+    body.dark .chip:hover{border-color:var(--primary)}
+    body.dark .history{background:#2c2c2c; border-color:#444}
+    body.dark .history-item{border-color:#444; color:#aaa}
+    body.dark .meta, body.dark p.lead{color:#aaa}
+    body.dark #btn-darkmode{background:var(--primary); color:white; border-color:white}
+
+    @media(max-width:1024px){.panel{grid-template-columns:1fr}.sidebar{order:-1}.offer img{width:100px; height:70px}}
+    @media(max-width:768px){
+      header{padding:15px 20px}
+      .container{margin:30px auto}
+      .wish-card{padding:20px}
+      .panel{gap:20px}
+      .offer{flex-direction:column}
+      .offer img{width:100%; height:150px}
+      .price{text-align:left}
+    }
+  </style>
+</head>
+<body>
+  <button id="btn-darkmode" title="Alternar modo claro/escuro">🌙</button>
+
+  <header>
+    <h1>MundoTur</h1>
+    <nav>
+      <a href="index.html">Início</a>
+      <a href="destinos.html">Destinos</a>
+      <a href="desejo.html" aria-current="page">Desejo</a>
+      <a href="quiz.html">Quiz</a>
+      <a href="contacto.html">Contacto</a>
+      <a href="perfil.html">Perfil</a>
+    </nav>
+  </header>
+
+  <div class="container">
+    <div class="panel">
+      <section class="wish-card">
+        <h2>✨ Faz o teu desejo</h2>
+        <p class="lead">Descreve o que queres — tipo de viagem, orçamento, datas — e vamos sugerir os melhores sites, ofertas e preços para ti.</p>
+
+        <form id="wishForm">
+          <label for="wishText">O que te apetecia?</label>
+          <input type="text" id="wishText" placeholder="Ex: Férias na praia, família, até 800€">
+          
+          <label for="tripType">Tipo de viagem</label>
+          <select id="tripType">
+            <option value="any">Escolhe um tipo...</option>
+            <option value="praia">🏖️ Praia</option>
+            <option value="cidade">🏙️ Cidade</option>
+            <option value="aventura">⛰️ Aventura</option>
+            <option value="gastronomia">🍽️ Gastronomia</option>
+            <option value="cultural">🏛️ Cultural</option>
+          </select>
+
+          <label for="budget">Orçamento máximo (€)</label>
+          <input type="number" id="budget" placeholder="Ex: 500" min="0">
+
+          <label for="dates">Datas aproximadas (opcional)</label>
+          <input type="text" id="dates" placeholder="Ex: Junho - Julho 2026">
+
+          <label for="notes">Preferências adicionais</label>
+          <textarea id="notes" placeholder="Ex: voo direto, hotel 4*, atividades para crianças..."></textarea>
+
+          <div class="button-row">
+            <button type="submit" class="primary">🔍 Encontrar opções</button>
+            <button type="button" id="clearBtn" class="ghost">Limpar</button>
+          </div>
+          <p class="help">As recomendações baseiam-se em ofertas curadas. Preços e disponibilidade podem variar.</p>
+        </form>
+
+        <div class="results-section">
+          <h3>📌 Resultados</h3>
+            <div id="chosenLocation" class="chosen-banner" style="display:none">Local escolhido: <span id="chosenName" style="color:var(--primary)"></span></div>
+            <div id="results" class="recommendations"></div>
+        </div>
+      </section>
+
+      <aside class="sidebar">
+        <div class="wish-card">
+          <h3 style="margin-top:0">💡 Ideias rápidas</h3>
+          <div class="chip-group">
+            <button class="chip" data-sample="praia">Praia — lowcost</button>
+            <button class="chip" data-sample="cidade">Fim de semana</button>
+            <button class="chip" data-sample="aventura">Aventura</button>
+            <button class="chip" data-sample="gastronomia">Gastronomia</button>
+          </div>
+          
+          <div class="history" id="historyBox">
+            <div style="display:flex; justify-content:space-between; align-items:center">
+              <strong style="color:var(--primary)">📅 Pedidos recentes</strong>
+              <div>
+                <button id="clearHistoryBtn" class="ghost" style="padding:6px 10px; font-size:0.85rem">Limpar histórico</button>
+              </div>
+            </div>
+            <div id="historyList"></div>
+          </div>
+        </div>
+
+        <div class="wish-card">
+          <h3 style="margin-top:0">❓ Como funciona?</h3>
+          <p class="meta" style="margin:0; font-size:0.9rem; line-height:1.5">O motor analisa o teu desejo e recomenda as melhores ofertas com base em preço, tipo e localização. Tens links diretos para os sites.</p>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <footer>
+    © 2025 MundoTur — Descobre o mundo aos teus desejos 🌍
+  </footer>
+
+  <script>
+    const offers = [
+      { id:1, title:'Pacote Praia Algarve - 4 noites', tags:['praia','familia'], price:390, img:'https://images.unsplash.com/photo-1507525428034-b723cf961d3e', site:'https://www.booking.com', desc:'Hotel 4* com pequeno-almoço. Ideal para família.' },
+      { id:2, title:'City Break Paris - 3 noites', tags:['cidade','cultural'], price:260, img:'https://images.unsplash.com/photo-1505761671935-60b3a7427bad', site:'https://www.expedia.com', desc:'Alojamento central + guia opcional.' },
+      { id:3, title:'Aventura Serra - 5 dias', tags:['aventura','natureza'], price:420, img:'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee', site:'https://www.getyourguide.com', desc:'Trilhos guiados e alojamento rústico.' },
+      { id:4, title:'Roteiro Gastronómico Lisboa', tags:['gastronomia','cidade'], price:120, img:'https://images.unsplash.com/photo-1528605248644-14dd04022da1', site:'https://www.viator.com', desc:'Tour de petiscos e vinhos.' },
+      { id:5, title:'Escape Romântico - Madeira', tags:['praia','cidade'], price:480, img:'https://images.unsplash.com/photo-1504674900247-0877df9cc836', site:'https://www.booking.com', desc:'Suite com vista mar e jantar incluído.' },
+      { id:6, title:'Mini Trip NYC - 4 noites', tags:['cidade','cultural'], price:760, img:'https://images.unsplash.com/photo-1494976388531-d1058494cdd8', site:'https://www.kayak.com', desc:'Voo + hotel (promoção).' },
+    ];
+
+    const form = document.getElementById('wishForm');
+    const resultsEl = document.getElementById('results');
+    const historyList = document.getElementById('historyList');
+    const chosenLocationEl = document.getElementById('chosenLocation');
+    const chosenNameEl = document.getElementById('chosenName');
+    let lastSearchBudget = 0; // guarda o último orçamento para etiquetar resultados
+
+    function keywordScore(text, offer, selectedType = '', budget = 0){
+      const s = (text||'').toLowerCase();
+      let score = 0;
+      // strong match if user selected a type that matches offer tags
+      if (selectedType && selectedType !== 'any' && offer.tags.includes(selectedType)) score += 6;
+      // tag mentions in free text
+      offer.tags.forEach(tag => { if (s.includes(tag)) score += 4; });
+      // budget detection (either from explicit field or mentioned in text)
+      const matchBudget = s.match(/\b(\d{2,6})\b/);
+      const textBudget = matchBudget ? Number(matchBudget[1]) : 0;
+      const effectiveBudget = budget || textBudget;
+      if (effectiveBudget && effectiveBudget >= offer.price) score += 5;
+      else if (effectiveBudget && effectiveBudget > 0){
+        const diff = offer.price - effectiveBudget;
+        const pct = diff / offer.price;
+        if (pct <= 0.1) score += 1; else score -= 1;
+      }
+      // word-level matching with stronger weight for title tokens
+      const words = s.split(/\W+/).filter(Boolean);
+      const titleTokens = offer.title.toLowerCase().split(/\W+/).filter(Boolean);
+      words.forEach(w => {
+        if (titleTokens.includes(w)) score += 3;
+        else if (offer.title.toLowerCase().includes(w)) score += 2;
+        if (offer.desc.toLowerCase().includes(w)) score += 1;
+      });
+      return score;
+    }
+
+    function renderOffers(list){
+      resultsEl.innerHTML = '';
+      // esconder painel de escolhido até haver clique
+      if(chosenLocationEl) { chosenLocationEl.style.display = 'none'; chosenNameEl.textContent = ''; }
+      if (!list.length) { resultsEl.innerHTML = '<p class="meta">Nenhuma combinação encontrada. Tenta palavras diferentes ou aumenta o orçamento.</p>'; return }
+      const maxScore = Math.max(...list.map(x => x.score || 0), 1);
+      list.forEach((o, idx) => {
+        const div = document.createElement('div'); div.className='offer'; div.style.animationDelay = `${idx*0.1}s`;
+        const confidence = Math.max(8, Math.min(100, Math.round((o.score || 0) / maxScore * 100)));
+        const overBudget = lastSearchBudget > 0 && o.price > lastSearchBudget;
+        div.innerHTML = `
+          <img src="${o.img}" alt="${o.title}">
+          <div class="offer-text">
+            <h4>${o.title}</h4>
+            <div class="meta">${o.desc}</div>
+            <div style="margin-top:8px; font-size:0.9rem; color:#888">Confiança: <strong style="color:var(--primary)">${confidence}%</strong></div>
+            ${overBudget ? '<div style="margin-top:6px; font-size:0.9rem; color:#c55"><strong>Fora do orçamento</strong></div>' : ''}
+          </div>
+          <div class="price">
+            <b>€${o.price}</b>
+            <a href="${o.site}" target="_blank" rel="noopener">Ver oferta →</a>
+          </div>
+        `;
+        // botão confirmar para ir para página de confirmação
+        const confirmBtn = document.createElement('button');
+        confirmBtn.textContent = '✓ Confirmar';
+        confirmBtn.style.cssText = 'width:100%; margin-top:12px; padding:10px 12px; background:linear-gradient(135deg, var(--accent) 0%, #3fb9ad 100%); color:white; border:none; border-radius:8px; cursor:pointer; font-weight:600; font-size:0.95rem; transition:all 0.3s';
+        confirmBtn.onmouseover = () => confirmBtn.style.transform = 'scale(1.02)';
+        confirmBtn.onmouseout = () => confirmBtn.style.transform = 'scale(1)';
+        confirmBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          // guardar dados completos da oferta
+          localStorage.setItem('desejoChosen', JSON.stringify(o));
+          // redirecionar para confirmação
+          window.location.href = 'confirmacao.html';
+        });
+        div.appendChild(confirmBtn);
+        // ao clicar numa oferta, marcar como escolhida e guardar
+        div.addEventListener('click', () => setChosenOffer(o, div));
+        resultsEl.appendChild(div);
+      })
+    }
+
+    function setChosenOffer(offer, el){
+      // destacar visualmente
+      document.querySelectorAll('.offer').forEach(x=>x.classList.remove('selected'));
+      el.classList.add('selected');
+      // mostrar painel com o nome do local escolhido
+      if(chosenLocationEl && chosenNameEl){
+        chosenNameEl.textContent = offer.title;
+        chosenLocationEl.style.display = 'block';
+      }
+      // guardar no localStorage para persistência entre páginas
+      try{ localStorage.setItem('desejoChosen', JSON.stringify({title:offer.title, price:offer.price, ts:Date.now()})); }catch(e){}
+      // também guardar no histórico como escolha rápida
+      saveHistory({text: offer.title, type: 'oferta', budget: offer.price, notes: 'Escolhida', ts: Date.now()});
+    }
+
+    form.addEventListener('submit', (e)=>{
+      e.preventDefault();
+      const text = document.getElementById('wishText').value.trim();
+      const type = document.getElementById('tripType').value;
+      const budget = Number(document.getElementById('budget').value) || 0;
+      const notes = document.getElementById('notes').value.trim();
+      performSearch(text, type, budget, notes, true);
+    })
+
+    document.getElementById('clearBtn').addEventListener('click', ()=>{ form.reset(); resultsEl.innerHTML=''; if(chosenLocationEl){ chosenLocationEl.style.display='none'; chosenNameEl.textContent=''; } });
+
+    function saveHistory(item){
+      const h = JSON.parse(localStorage.getItem('desejoHistory')||'[]');
+      // evitar duplicados idênticos
+      const exists = h.findIndex(x => x.text === item.text && x.type === item.type && Number(x.budget) === Number(item.budget));
+      if (exists !== -1) h.splice(exists,1);
+      h.unshift(item); if (h.length>6) h.pop();
+      localStorage.setItem('desejoHistory', JSON.stringify(h));
+      renderHistory();
+    }
+
+    function renderHistory(){
+      const h = JSON.parse(localStorage.getItem('desejoHistory')||'[]');
+      historyList.innerHTML='';
+      if (!h.length) { historyList.innerHTML = '<p class="meta" style="margin-top:10px">Nenhum pedido recente</p>'; return }
+      h.forEach((entry, idx)=>{
+        const el = document.createElement('div'); el.className='history-item';
+        el.innerHTML = `
+          <div style="display:flex; justify-content:space-between; align-items:center">
+            <div>
+              <strong>${entry.text || entry.type || 'Pedido'}</strong><br>
+              <small>${new Date(entry.ts).toLocaleString('pt-PT')}</small>
+            </div>
+            <div style="display:flex; gap:8px">
+              <button class="history-run" data-idx="${idx}" style="padding:6px 10px; border-radius:8px; border:1px solid #e0e0e0; background:#fff; cursor:pointer">Repetir</button>
+              <button class="history-del" data-idx="${idx}" style="padding:6px 10px; border-radius:8px; border:1px solid #f3c0b0; background:rgba(255,140,66,0.05); cursor:pointer">Eliminar</button>
+            </div>
+          </div>
+        `;
+        historyList.appendChild(el);
+      })
+      // ligar eventos
+      historyList.querySelectorAll('.history-run').forEach(btn=> btn.addEventListener('click', (ev)=>{ ev.stopPropagation(); const idx = Number(btn.dataset.idx); runHistory(idx); }));
+      historyList.querySelectorAll('.history-del').forEach(btn=> btn.addEventListener('click', (ev)=>{ ev.stopPropagation(); const idx = Number(btn.dataset.idx); deleteHistoryItem(idx); }));
+    }
+
+    function performSearch(text, type, budget, notes, saveToHistory = true){
+      lastSearchBudget = Number(budget) || 0;
+      const scored = offers.map(o => ({...o, score: keywordScore((text||'')+' '+(notes||''), o, type, budget)}));
+
+      // Se o utilizador indicar orçamento, priorizar ofertas dentro do orçamento.
+      // Se houver ofertas dentro do orçamento, mostramos só essas; caso contrário
+      // mostramos as melhores opções mesmo que estejam acima, com aviso.
+      let within = [];
+      if (lastSearchBudget > 0) {
+        within = scored.filter(o => Number(o.price) <= lastSearchBudget);
+      }
+
+      let filtered;
+      if (within.length > 0) {
+        filtered = within;
+      } else {
+        // nenhuma dentro do orçamento: mostrar resultados mais relevantes, mas avisar
+        filtered = scored;
+        // inserir aviso informativo acima dos resultados
+        const notice = document.createElement('div');
+        notice.className = 'meta';
+        notice.style.margin = '8px 0 12px';
+        notice.style.color = '#b44';
+        notice.textContent = lastSearchBudget > 0 ? 'Nenhuma oferta está dentro do orçamento indicado — a seguir estão as melhores opções.' : '';
+        // remover avisos anteriores e inserir novo se aplicável
+        const prev = resultsEl.previousElementSibling;
+        if (prev && prev.id === 'budgetNotice') prev.remove();
+        if (notice.textContent) { notice.id = 'budgetNotice'; resultsEl.parentNode.insertBefore(notice, resultsEl); }
+      }
+
+      filtered.sort((a,b)=>{
+        const aBudget = (lastSearchBudget && a.price<=lastSearchBudget) ? -1:0;
+        const bBudget = (lastSearchBudget && b.price<=lastSearchBudget) ? -1:0;
+        if (aBudget!==bBudget) return aBudget-bBudget;
+        if (b.score!==a.score) return b.score - a.score;
+        return a.price - b.price;
+      });
+
+      renderOffers(filtered.slice(0,6));
+      if (saveToHistory) saveHistory({text,type,budget,notes,ts:Date.now()});
+    }
+
+    function runHistory(idx){
+      const h = JSON.parse(localStorage.getItem('desejoHistory')||'[]');
+      const entry = h[idx]; if (!entry) return;
+      document.getElementById('wishText').value = entry.text || '';
+      document.getElementById('tripType').value = entry.type || 'any';
+      document.getElementById('budget').value = entry.budget || '';
+      document.getElementById('notes').value = entry.notes || '';
+      performSearch(entry.text || '', entry.type || 'any', Number(entry.budget)||0, entry.notes||'', false);
+    }
+
+    function deleteHistoryItem(idx){
+      const h = JSON.parse(localStorage.getItem('desejoHistory')||'[]');
+      if (idx<0 || idx>=h.length) return;
+      h.splice(idx,1);
+      localStorage.setItem('desejoHistory', JSON.stringify(h));
+      renderHistory();
+    }
+
+    document.getElementById('clearHistoryBtn')?.addEventListener('click', ()=>{ localStorage.removeItem('desejoHistory'); renderHistory(); });
+
+    document.querySelectorAll('.chip').forEach(b=>b.addEventListener('click', (ev)=>{ const s = ev.currentTarget.dataset.sample; document.getElementById('wishText').value = s; }));
+
+    const btnDark = document.getElementById('btn-darkmode');
+    btnDark.addEventListener('click', () => {
+      document.body.classList.toggle('dark');
+      btnDark.textContent = document.body.classList.contains('dark') ? "☀️" : "🌙";
+    });
+
+    renderHistory();
+  </script>
+</body>
+</html>
